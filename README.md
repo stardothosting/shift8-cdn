@@ -1,15 +1,14 @@
-# Shift8 Jenkins Integration
+# Shift8 CDN
 * Contributors: shift8
 * Donate link: https://www.shift8web.ca
-* Tags: jenkins, wordpress, wordpress automation, staging wordpress, staging, push, production push, jenkins push, wordpress deploy, wordpress build, build, deployment, deploy
+* Tags: cdn, free cdn, speed, performance, wordpress cache, wordpress, wordpress automation, wordpress deploy, wordpress build, build, deployment, deploy
 * Requires at least: 3.0.1
 * Tested up to: 5.0.2
 * Stable tag: 1.01
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Plugin that allows you to trigger a Jenkins hook straight from the Wordpress interface. This is intended for end-users to trigger a "push" for jenkins to push a staging site to production (for example). For full instructions and an in-dep
-th overview of how the plugin works, you can check out our detailed [blog post about this plugin](https://www.shift8web.ca/blog/wordpress-plugin-to-integrate-jenkins-build-api/).
+This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site.
 
 ## Want to see the plugin in action?
 
