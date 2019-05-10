@@ -1,0 +1,31 @@
+.shift8-jenkins-button {
+    background-color: #f44336; 
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+.shift8-jenkins-button-container {
+	text-align:center;
+	margin:0 auto;
+}
+.shift8-jenkins-table input {
+    width:100%;
+}
+.shift8-jenkins-activity-log-container h3 {
+    font-size:18px;
+}
+.shift8-jenkins-scrollabletextbox {
+    background-color: #fff;
+    height:200px;
+    width:40%;
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 82%;
+    overflow:scroll;
+}
+.shift8-jenkins-scrollabletextbox li {
+    font-weight:bold;
+}
