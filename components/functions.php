@@ -39,37 +39,37 @@ function shift8_cdn_poll() {
         global $shift8_cdn_table_name;
         $current_user = wp_get_current_user();
 
-        $cdn_user = esc_attr(get_option('shift8_cdn_user'));
-        $cdn_api = esc_attr(get_option('shift8_cdn_api'));
+        $cdn_url = esc_attr(get_option('shift8_cdn_url'));
+        $cdn_email = esc_attr(get_option('shift8_cdn_email'));
         // Set headers for WP Remote get
         $headers = array(
             'Content-type: application/json',
-            'Authorization' => 'Basic ' . base64_encode($cdn_user . ':' . $cdn_api),
+            //'Authorization' => 'Basic ' . base64_encode($cdn_user . ':' . $cdn_api),
         );
 
         // Use WP Remote Get to poll the cdn api 
-        $response = wp_remote_get( esc_attr(get_option('shift8_cdn_url')),
+        $response = wp_remote_post( 'https://shift8cdn.com/api/create',
             array(
+                'method' => 'POST',
                 'headers' => $headers,
                 'httpversion' => '1.1',
-                'timeout' => '10',
+                'timeout' => '45',
+                'blocking' => true,
+                'body' => array(
+                    'url' => $cdn_url,
+                    'email' => $cdn_email
+                ),
             )
         );
-        if (is_array($response) && $response['response']['code'] == '201') {
-            $date = date('Y-m-d H:i:s');
-            echo $date . ' / ' . $current_user->user_login . ' : Pushed to production';
-            $wpdb->insert( 
-                $wpdb->prefix . $shift8_cdn_table_name,
-                array( 
-                    'user_name' => $current_user->user_login,
-                    'activity' => 'pushed to production',
-                    'activity_date' => $date,
-                )
-            );
+        if (is_array($response) && $response['response']['code'] == '200' && !json_decode($response['body'])->error) {
+            echo $response['body'];
+            update_option('shift8_cdn_api', esc_attr(json_decode($response['body'])->apikey));
+            update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
         } else {
             echo 'error_detected : ';
             if (is_array($response['response'])) {
-                echo $response['response']['code'] . ' - ' . $response['response']['message'];
+                echo esc_attr(json_decode($response['body'])->error);
+
             } else {
                 echo 'unknown';
             }

@@ -1,9 +1,5 @@
 <?php
 
-// Create activity log table
-add_action( 'init', 'shift8_cdn_register_activity_log_table', 1 );
-add_action( 'switch_blog', 'shift8_cdn_register_activity_log_table' );
- 
 // create custom plugin settings menu
 add_action('admin_menu', 'shift8_cdn_create_menu');
 function shift8_cdn_create_menu() {
@@ -20,43 +16,32 @@ function shift8_cdn_create_menu() {
 function register_shift8_cdn_settings() {
     //register our settings
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_url', 'shift8_cdn_url_validate' );
-    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_user', 'shift8_cdn_user_validate' );
-    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_api', 'shift8_cdn_api_validate' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_email', 'shift8_cdn_email_validate' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_api' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_prefix' );
 }
 
 // Validate Input for Admin options
 function shift8_cdn_url_validate($data){
-	if(filter_var($data, FILTER_VALIDATE_URL,FILTER_FLAG_QUERY_REQUIRED)) {
+	if(filter_var($data, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
    		return $data;
    	} else {
    		add_settings_error(
             'shift8_cdn_url',
             'shift8-cdn-notice',
-            'You did not enter a valid URL for the CDN push',
+            'You did not enter a valid URL for your site URL',
             'error');
    	}
 }
 
-function shift8_cdn_user_validate($data){
-	if(filter_var($data, FILTER_SANITIZE_STRING)) {
+function shift8_cdn_email_validate($data){
+	if(filter_var($data, FILTER_SANITIZE_EMAIL)) {
    		return $data;
    	} else {
    		add_settings_error(
-            'shift8_cdn_user',
+            'shift8_cdn_email',
             'shift8-cdn-notice',
-            'You did not enter a valid string for the username field',
-            'error');
-   	}
-}
-
-function shift8_cdn_api_validate($data){
-	if(filter_var($data, FILTER_SANITIZE_STRING)) {
-   		return $data;
-   	} else {
-   		add_settings_error(
-            'shift8_cdn_api',
-            'shift8-cdn-notice',
-            'You did not enter a valid string for the API field',
+            'You did not enter a valid string for the email field',
             'error');
    	}
 }
@@ -65,8 +50,7 @@ function shift8_cdn_api_validate($data){
 function shift8_cdn_check_options() {
     // If enabled is not set
     if(empty(esc_attr(get_option('shift8_cdn_url') ))) return false;
-    if(empty(esc_attr(get_option('shift8_cdn_api') ))) return false;
-    if(empty(esc_attr(get_option('shift8_cdn_user') ))) return false;
+    if(empty(esc_attr(get_option('shift8_cdn_email') ))) return false;
 
     return true;
 

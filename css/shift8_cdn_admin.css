@@ -1,5 +1,4 @@
-.shift8-jenkins-button {
-    background-color: #f44336; 
+.shift8-cdn-button {
     border: none;
     color: white;
     padding: 15px 32px;
@@ -8,17 +7,24 @@
     display: inline-block;
     font-size: 16px;
 }
-.shift8-jenkins-button-container {
+.shift8-cdn-button-unregister {
+    background-color: #f44336;
+}
+.shift8-cdn-button-register {
+    background-color: #2ecc71;
+}
+.shift8-cdn-button-container {
 	text-align:center;
 	margin:0 auto;
 }
-.shift8-jenkins-table input {
-    width:100%;
+.shift8-cdn-table input {
+    width:50%;
 }
-.shift8-jenkins-activity-log-container h3 {
+.shift8-cdn-response {
     font-size:18px;
+    padding-top:25px;
 }
-.shift8-jenkins-scrollabletextbox {
+.shift8-cdn-scrollabletextbox {
     background-color: #fff;
     height:200px;
     width:40%;
@@ -26,6 +32,6 @@
     font-size: 82%;
     overflow:scroll;
 }
-.shift8-jenkins-scrollabletextbox li {
+.shift8-cdn-scrollabletextbox li {
     font-weight:bold;
 }

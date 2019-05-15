@@ -49,32 +49,35 @@ function shift8_cdn_settings_page() {
     <td><span id="shift8-cdn-notice">
     <?php 
     settings_errors('shift8_cdn_url');
-    settings_errors('shift8_cdn_user');
-    settings_errors('shift8_cdn_api'); 
+    settings_errors('shift8_cdn_email');
+    settings_errors('shift8_cdn_api');
+    settings_errors('shift8_cdn_prefix');
     ?>
     </span></td>
 	</tr>
 	<tr valign="top">
-    <th scope="row">Jenkins Build Trigger URL : </th>
-    <td><input type="text" name="shift8_cdn_url" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_url'))) ? '' : esc_attr(get_option('shift8_cdn_url'))); ?>"></td>
+    <th scope="row">Site URL : </th>
+    <td><input type="text" name="shift8_cdn_url" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))); ?>"></td>
 	</tr>
 	<tr valign="top">
-    <th scope="row">Jenkins Build Username : </th>
-    <td><input type="text" name="shift8_cdn_user" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_user'))) ? '' : esc_attr(get_option('shift8_cdn_user'))); ?>"></td>
+    <th scope="row">Your Email : </th>
+    <td><input type="text" name="shift8_cdn_email" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_email'))) ? '' : esc_attr(get_option('shift8_cdn_email'))); ?>"></td>
 	</tr>
 	<tr valign="top">
-    <th scope="row">Jenkins Build API Token : </th>
-    <td><input type="text" name="shift8_cdn_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_api'))) ? '' : esc_attr(get_option('shift8_cdn_api'))); ?>"></td>
+    <th scope="row">Shift8 CDN API Key : </th>
+    <td><input type="text" id="shift8_cdn_api_field" name="shift8_cdn_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_api'))) ? '' : esc_attr(get_option('shift8_cdn_api'))); ?>" readonly></td>
+	</tr>
+	<tr valign="top">
+    <th scope="row">Shift8 CDN Prefix : </th>
+    <td><input type="text" id="shift8_cdn_prefix_field" name="shift8_cdn_prefix" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_prefix'))) ? '' : esc_attr(get_option('shift8_cdn_prefix'))); ?>" readonly></td>
 	</tr>
 	</table>
     <?php submit_button(); ?>
 	</form>
 </div>
 	<div class="shift8-cdn-button-container">
-	<a id="shift8-cdn-push" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button">Push to Production</button></a>
-	<div class="shift8-cdn-push-container">
-	<div class="shift8-cdn-push-progress"></div>
-	</div>
+	<a id="shift8-cdn-push" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-register">Register</button></a>
+	<div class="shift8-cdn-response">
 	</div>
 <?php 
 	} // is_admin
