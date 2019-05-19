@@ -21,6 +21,15 @@ function register_shift8_cdn_settings() {
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_prefix' );
 }
 
+// Uninstall hook
+function handle_shift8_cdn_uninstall_hook() {
+  delete_option('shift8_cdn_url');
+  delete_option('shift8_cdn_email');
+  delete_option('shift8_cdn_api');
+  delete_option('shift8_cdn_prefix');
+}
+register_uninstall_hook( S8CDN_FILE, 'handle_shift8_cdn_uninstall_hook' );
+
 // Validate Input for Admin options
 function shift8_cdn_url_validate($data){
 	if(filter_var($data, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
@@ -58,7 +67,7 @@ function shift8_cdn_check_enabled() {
 }
 
 // Process all options and return array
-function shift8_security_check_options() {
+function shift8_cdn_check_options() {
   $shift8_options = array();
   $shift8_options['cdn_url'] = esc_attr( get_option('shift8_cdn_url') );
   $shift8_options['cdn_email'] = esc_attr( get_option('shift8_cdn_email') );

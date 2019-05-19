@@ -3,16 +3,17 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.01
+ * Version: 1.02
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
  */
 
+require_once(plugin_dir_path(__FILE__).'shift8-cdn-rules.php' );
+require_once(plugin_dir_path(__FILE__).'inc/shift8_cdn_rewrite.class.php' );
 require_once(plugin_dir_path(__FILE__).'components/enqueuing.php' );
 require_once(plugin_dir_path(__FILE__).'components/settings.php' );
 require_once(plugin_dir_path(__FILE__).'components/functions.php' );
-require_once(plugin_dir_path(__FILE__).'inc/shift8-cdn-rewriter.class.php' );
 
 // Admin welcome page
 if (!function_exists('shift8_main_page')) {
