@@ -81,16 +81,16 @@ function shift8_cdn_rewrites( $rewrites ) {
         if (shift8_cdn_check_enabled()) {
             // Get all options configured as array
             $shift8_options = shift8_cdn_check_options();
+            $shift8_site_url = get_site_url();
 
             $urls = array(
                 home_url( '/wp-content/uploads/' ),
                 home_url( '/wp-content/themes/' ),
                 home_url( '/wp-content/plugins/' ),
             );
-            var_dump($urls);
 
             foreach( $urls as $in => $out ) {
-                $rewrites[$out] = preg_replace( '/http[s]?:\/\//i', 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX, $urls[$in] );
+                $rewrites[$out] = str_replace( $shift8_site_url, 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX, $urls[$in] );
             }
 
             return $rewrites;
