@@ -87,6 +87,7 @@ function shift8_cdn_rewrites( $rewrites ) {
                 home_url( '/wp-content/uploads/' ),
                 home_url( '/wp-content/themes/' ),
                 home_url( '/wp-content/plugins/' ),
+                home_url( '/wp-includes/' ),
             );
 
             foreach( $urls as $in => $out ) {
