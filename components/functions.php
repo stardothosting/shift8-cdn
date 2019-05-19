@@ -34,7 +34,7 @@ function shift8_cdn_push() {
 
 // Handle the actual GET
 function shift8_cdn_poll() {
-    if (current_user_can('administrator') && shift8_cdn_check_options()) {
+    if (current_user_can('administrator')) {
         global $wpdb;
         global $shift8_cdn_table_name;
         $current_user = wp_get_current_user();
@@ -48,7 +48,7 @@ function shift8_cdn_poll() {
         );
 
         // Use WP Remote Get to poll the cdn api 
-        $response = wp_remote_post( 'https://shift8cdn.com/api/create',
+        $response = wp_remote_post( S8CDN_API . '/api/create',
             array(
                 'method' => 'POST',
                 'headers' => $headers,
@@ -76,3 +76,24 @@ function shift8_cdn_poll() {
         } 
     } 
 }
+
+// Function to initialize & check for session
+function shift8_cdn_init() {
+    // Initialize only if enabled
+    if (shift8_ipintel_check_options()) {
+        global $shift8_options;
+        $shift8_options = shift8_security_check_options();
+
+        $excludes = array_map('trim', explode(',', '.php'));
+
+        new CDN_Enabler_Rewriter(
+            get_option('home'),
+            'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX,
+            'wp-content,wp-includes',
+            $excludes
+        );
+
+    }
+}
+add_action('init', 'shift8_cdn_init', 1);
+

@@ -12,6 +12,7 @@
 require_once(plugin_dir_path(__FILE__).'components/enqueuing.php' );
 require_once(plugin_dir_path(__FILE__).'components/settings.php' );
 require_once(plugin_dir_path(__FILE__).'components/functions.php' );
+require_once(plugin_dir_path(__FILE__).'inc/shift8-cdn-rewriter.class.php' );
 
 // Admin welcome page
 if (!function_exists('shift8_main_page')) {

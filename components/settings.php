@@ -47,11 +47,23 @@ function shift8_cdn_email_validate($data){
 }
 
 // Validate admin options
-function shift8_cdn_check_options() {
-    // If enabled is not set
-    if(empty(esc_attr(get_option('shift8_cdn_url') ))) return false;
-    if(empty(esc_attr(get_option('shift8_cdn_email') ))) return false;
+function shift8_cdn_check_enabled() {
+  // If enabled is not set
+  if(empty(esc_attr(get_option('shift8_cdn_url') ))) return false;
+  if(empty(esc_attr(get_option('shift8_cdn_email') ))) return false;
+  if(empty(esc_attr(get_option('shift8_cdn_api') ))) return false;
+  if(empty(esc_attr(get_option('shift8_cdn_prefix') ))) return false;
 
-    return true;
+  return true;
+}
 
+// Process all options and return array
+function shift8_security_check_options() {
+  $shift8_options = array();
+  $shift8_options['cdn_url'] = esc_attr( get_option('shift8_cdn_url') );
+  $shift8_options['cdn_email'] = esc_attr( get_option('shift8_cdn_email') );
+  $shift8_options['cdn_api'] = esc_attr( get_option('shift8_cdn_api') );
+  $shift8_options['cdn_prefix'] = esc_attr( get_option('shift8_cdn_prefix') );
+
+  return $shift8_options;
 }
