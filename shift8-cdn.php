@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.05
+ * Version: 1.06
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3

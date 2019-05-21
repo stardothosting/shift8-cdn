@@ -1,14 +1,31 @@
 # Shift8 CDN
 * Contributors: shift8
 * Donate link: https://www.shift8web.ca
-* Tags: cdn, free cdn, speed, performance, wordpress cache, wordpress, wordpress automation, wordpress deploy, wordpress build, build, deployment, deploy
+* Tags: cdn, free cdn, speed, performance, wordpress cache, wordpress, wordpress automation, wordpress deploy, wordpress build, build, deployment, deploy, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 5.0.2
-* Stable tag: 1.05
+* Stable tag: 1.06
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site.
+This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site. What this means is that you can simply install this plugin, activate and register with our CDN service and all of your static assets on your website will be served through our global content delivery network.
+
+== Free Content Delivery Network for your Static Content ==
+
+[Shift8](https://www.shift8web.ca) has rolled out a consistently-growing CDN with endpoints all over the world. This plugin will make your site load way faster by using latency-based and geographic-based DNS resolution for requests made to your site to be served by an endpoint closest to the user making the request. This means that a user making a request in Mumbai, India will hit the Mumbai server to download the static content from your website, improving performance remarkably.
+
+Current endpoints in use (more added regularly) :
+
+1. USA - Northern California
+2. USA - Northern Virginia
+3. Canada - Toronto
+4. Europe - London, England
+5. Europe - Stockholm, Sweden
+6. Asia Pacific - Hong Kong, China
+7. Asia Pacific - Tokyo, Japan
+8. Asia Pacific - Sydney, Australia
+9. Asia Pacific - Mumbai, India
+10. Latin America - Sao Paulo, Brazil
 
 ## Want to see the plugin in action?
 
@@ -61,3 +78,6 @@ You should monitor the Jenkins log to see if it is able to hit the site. Also mo
 
 ### 1.05
 * Now rewriting wp-includes static assets
+
+### 1.06
+* Updated readme
