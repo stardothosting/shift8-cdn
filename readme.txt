@@ -45,15 +45,15 @@ This section describes how to install the plugin and get it working.
 
 e.g.
 
-1. Upload the plugin files to the `/wp-content/plugins/shif8-jenkins` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/shif8-cdn` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. Navigate to the plugin settings page and define your settings
 
 == Frequently Asked Questions ==
 
-= I tested it on myself and its not working for me! =
+= I tested it on my site and its not working for me! =
 
-You should monitor the Jenkins log to see if it is able to hit the site. Also monitor the server logs of your Wordpress site to identify if any problems (i.e. curl) are happening.
+Send us an email to cdnhelp@shift8web.com or post in the support forums here and we will help. We are constnatly improving and updating the plugin also!
 
 == Screenshots ==
 
