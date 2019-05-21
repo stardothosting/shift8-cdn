@@ -37,9 +37,11 @@ You can view three example sites where this plugin is live :
 
 ## Features
 
-- Settings area to allow you to define the Jenkins push URL including the authentication key
+- 100% Free CDN for static assets on your site (CSS, JS, Images, Font files and more)
+- Geographic and latency based DNS routing of requests to the nearest endpoint server across the globe
+- Super easy set up : just install plugin, activate and register to start using within minutes.
 
-## Installation 
+## Installation
 
 This section describes how to install the plugin and get it working.
 
@@ -48,6 +50,8 @@ e.g.
 1. Upload the plugin files to the `/wp-content/plugins/shif8-cdn` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. Navigate to the plugin settings page and define your settings
+4. Hit the "Register" button to register your site with our CDN network.
+5. Within a few minutes the change will propagate to all our systems across the network.
 
 ## Frequently Asked Questions 
 

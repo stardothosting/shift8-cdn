@@ -38,7 +38,7 @@ You can view three example sites where this plugin is live :
 == Features ==
 
 - 100% Free CDN for static assets on your site (CSS, JS, Images, Font files and more)
-- Geographic and latency based DNS routing of requests to the nearest endpoint server across the globa
+- Geographic and latency based DNS routing of requests to the nearest endpoint server across the globe
 - Super easy set up : just install plugin, activate and register to start using within minutes.
 
 == Installation ==
