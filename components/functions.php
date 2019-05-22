@@ -77,6 +77,7 @@ function shift8_cdn_poll() {
     } 
 }
 
+// Rewrite static URLs with CDN
 function shift8_cdn_rewrites( $rewrites ) {
         if (shift8_cdn_check_enabled()) {
             // Get all options configured as array
@@ -99,3 +100,15 @@ function shift8_cdn_rewrites( $rewrites ) {
 }
 
 add_filter( 'shift8_cdn_rewrites', 'shift8_cdn_rewrites' );
+
+// Add DNS prefetch for faster resolution and loading
+function shift8_cdn_prefetch() {
+    if (shift8_cdn_check_enabled()) {
+        // Get all options configured as array
+        $shift8_options = shift8_cdn_check_options();
+        echo '<meta http-equiv="x-dns-prefetch-control" content="on">
+        <link rel="dns-prefetch" href="//' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '" />';
+    }
+}
+
+add_action('wp_head', 'shift8_cdn_prefetch', 0);
