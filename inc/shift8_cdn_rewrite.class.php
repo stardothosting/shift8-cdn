@@ -10,11 +10,6 @@ class Shift8_CDN {
 	 */
 	public function __construct() {
 
-		// Allow for ignoring CDN during testing
-		if ( defined( 'IGNORE_RYANS_CDN' ) ) {
-			return;
-		}
-
 		add_action( 'template_redirect', array( $this, 'template_redirect' ) );
 		add_filter( 'rewrite_urls',      array( $this, 'filter' ) );
 
