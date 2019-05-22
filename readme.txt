@@ -63,6 +63,7 @@ Send us an email to cdnhelp@shift8web.com or post in the support forums here and
 
 1. Geographic Endpoints for Content Delivery Network
 2. Admin area settings 
+3. Before / After CDN performance improvement, taken from Pingdom
 
 == Changelog ==
 
