@@ -35,7 +35,6 @@ You can view three example sites where this plugin is live :
 
 - Example Site 1 : [Wordpress Hosting](https://www.stackstar.com "Wordpress Hosting")
 - Example Site 2 : [Web Design in Toronto](https://www.shift8web.ca "Web Design in Toronto")
-- Example Site 3 : [Dope Mail](https://dopemail.com "Buy Weed Online")
 
 ## Features
 
