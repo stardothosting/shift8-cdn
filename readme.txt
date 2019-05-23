@@ -27,6 +27,8 @@ Current endpoints in use (more added regularly) :
 9. Asia Pacific - Mumbai, India
 10. Latin America - Sao Paulo, Brazil
 
+You can learn more about how the CDN was setup and how it works by reading our [blog post](https://www.shift8web.ca/2019/05/how-we-created-our-own-free-content-delivery-network-for-wordpress-users/).
+
 == Want to see the plugin in action? ==
 
 You can view three example sites where this plugin is live :
