@@ -60,6 +60,10 @@ e.g.
 
 Send us an email to cdnhelp@shift8web.com or post in the support forums here and we will help. We are constnatly improving and updating the plugin also!
 
+### I noticed on lazy load images, the CDN isnt being used 
+
+This is a known issue with how lazy loading is implemented in some scenarios. Currently if you want the CDN to be used for lazy load images, you have to turn lazy load off.
+
 ## Screenshots 
 
 1. Geographic Endpoints for Content Delivery Network
