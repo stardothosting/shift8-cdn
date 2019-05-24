@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.07
+ * Version: 1.08
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -57,6 +57,22 @@ function shift8_cdn_settings_page() {
     ?>
     </span></td>
 	</tr>
+    <tr valign="top">
+    <th scope="row">Enable Shift8 CDN : </th>
+    <td>
+    <?php
+    if (esc_attr( get_option('shift8_cdn_enabled') ) == 'on') {
+        $enabled_checked = "checked";
+    } else {
+        $enabled_checked = "";
+    }
+    ?>
+    <label class="switch">
+    <input type="checkbox" name="shift8_cdn_enabled" <?php echo $enabled_checked; ?>>
+    <div class="slider round"></div>
+    </label>
+    </td>
+    </tr>
 	<tr valign="top">
     <th scope="row">Site URL : </th>
     <td><input type="text" name="shift8_cdn_url" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))); ?>"></td>

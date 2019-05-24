@@ -15,6 +15,7 @@ function shift8_cdn_create_menu() {
 // Register admin settings
 function register_shift8_cdn_settings() {
     //register our settings
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_enabled' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_url', 'shift8_cdn_url_validate' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_email', 'shift8_cdn_email_validate' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_api' );
@@ -58,6 +59,7 @@ function shift8_cdn_email_validate($data){
 // Validate admin options
 function shift8_cdn_check_enabled() {
   // If enabled is not set
+  if(esc_attr( get_option('shift8_cdn_enabled') ) != 'on') return false;
   if(empty(esc_attr(get_option('shift8_cdn_url') ))) return false;
   if(empty(esc_attr(get_option('shift8_cdn_email') ))) return false;
   if(empty(esc_attr(get_option('shift8_cdn_api') ))) return false;
