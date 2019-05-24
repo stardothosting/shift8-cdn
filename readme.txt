@@ -4,7 +4,7 @@
 * Tags: cdn, free cdn, speed, performance, wordpress cache, wordpress, wordpress automation, wordpress deploy, wordpress build, build, deployment, deploy, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 5.0.2
-* Stable tag: 1.08
+* Stable tag: 1.09
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -94,3 +94,6 @@ Send us an email to cdnhelp@shift8web.com or post in the support forums here and
 
 = 1.08 =
 * Added on/off switch to assist troubleshooting
+
+= 1.09 =
+* Fixed bug in ruleset where undefined constant was being used
