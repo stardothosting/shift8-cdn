@@ -4,11 +4,20 @@
 * Tags: cdn, free cdn, speed, performance, wordpress cache, wordpress, wordpress automation, wordpress deploy, wordpress build, build, deployment, deploy, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 5.0.2
-* Stable tag: 1.09
+* Stable tag: 1.10
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site. What this means is that you can simply install this plugin, activate and register with our CDN service and all of your static assets on your website will be served through our global content delivery network.
+
+== Newly added entpoints ==
+
+New endpoints added : 
+
+- Warsaw, Poland
+- Singapore
+- Dallas, TX, USA
+- Miami, FL, USA
 
 == Free Content Delivery Network for your Static Content ==
 
@@ -18,14 +27,18 @@ Current endpoints in use (more added regularly) :
 
 1. USA - Northern California
 2. USA - Northern Virginia
-3. Canada - Toronto
-4. Europe - London, England 
-5. Europe - Stockholm, Sweden
-6. Asia Pacific - Hong Kong, China
-7. Asia Pacific - Tokyo, Japan
-8. Asia Pacific - Sydney, Australia
-9. Asia Pacific - Mumbai, India
-10. Latin America - Sao Paulo, Brazil
+3. USA - Dallas, TX
+4. USA - Miami, FL
+5. Canada - Toronto
+6. Europe - London, England 
+7. Europe - Stockholm, Sweden
+8. Europe - Warsaw, Poland
+9. Asia Pacific - Hong Kong, China
+10. Asia Pacific - Tokyo, Japan
+11. Asia Pacific - Sydney, Australia
+12. Asia Pacific - Singapore
+13. Asia Pacific - Mumbai, India
+14. Latin America - Sao Paulo, Brazil
 
 You can learn more about how the CDN was setup and how it works by reading our [blog post](https://www.shift8web.ca/2019/05/how-we-created-our-own-free-content-delivery-network-for-wordpress-users/).
 
@@ -101,3 +114,6 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 = 1.09 =
 * Fixed bug in ruleset where undefined constant was being used
+
+= 1.10 =
+* Added endpoints and instructional message on settings
