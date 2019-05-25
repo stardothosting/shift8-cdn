@@ -13,8 +13,8 @@ jQuery(document).ready(function() {
             	// This outputs the result of the ajax request
             	jQuery('#shift8_cdn_api_field').val(data.apikey);
             	jQuery('#shift8_cdn_prefix_field').val(data.cdnprefix);
-                jQuery('.shift8-cdn-response').html('Please allow for 5 minutes for CDN to be deployed across the network.').fadeIn();
-                setTimeout(function(){ jQuery('.shift8-cdn-response').fadeOut() }, 15000);                
+                jQuery('.shift8-cdn-response').html('Please allow for 5 minutes for CDN to be deployed across the network. Check the test URL and dont forget to enable!').fadeIn();
+                setTimeout(function(){ jQuery('.shift8-cdn-response').fadeOut() }, 25000);                
             },
         	error: function(errorThrown){
             	console.log('Error : ' + JSON.stringify(errorThrown));

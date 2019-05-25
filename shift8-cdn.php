@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.10
+ * Version: 1.11
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -89,6 +89,12 @@ function shift8_cdn_settings_page() {
     <th scope="row">Shift8 CDN Prefix : </th>
     <td><input type="text" id="shift8_cdn_prefix_field" name="shift8_cdn_prefix" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_prefix'))) ? '' : esc_attr(get_option('shift8_cdn_prefix'))); ?>" readonly></td>
 	</tr>
+    <?php if (!empty(esc_attr(get_option('shift8_cdn_prefix')))) { ?>
+    <tr valign="top">
+    <th scope="row">Test URL before enabling : </th>
+    <td><a href="<?php echo (empty(esc_attr(get_option('shift8_cdn_prefix'))) ? '' : 'https://' . esc_attr(get_option('shift8_cdn_prefix'))) . '.wpcdn.shift8cdn.com/wp-content/plugins/shift8-cdn/test/test.png'; ?>" target="_new" >Click to open test URL in new tab</a></td>
+    </tr>
+    <?php } ?>
 	</table>
     <?php submit_button(); ?>
 	</form>

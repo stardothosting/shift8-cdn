@@ -13,6 +13,9 @@
 .shift8-cdn-button-register {
     background-color: #2ecc71;
 }
+.shift8-cdn-button-register:hover {
+    background-color: #39ff8d;
+}
 .shift8-cdn-button-container {
 	text-align:center;
 	margin:0 auto;
