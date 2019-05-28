@@ -22,9 +22,9 @@ function shift8_cdn_decrypt($key, $garble) {
 }
 
 // Handle the ajax trigger
-add_action( 'wp_ajax_shift8_cdn_push', 'shift8_cdn_register' );
-function shift8_cdn_register() {
-    if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['action'] == 'shift8_cdn_register') {
+add_action( 'wp_ajax_shift8_cdn_push', 'shift8_cdn_push' );
+function shift8_cdn_push() {
+    if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'register') {
         shift8_cdn_poll('register');
         die();
     } else {

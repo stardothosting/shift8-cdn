@@ -7,7 +7,8 @@ jQuery(document).ready(function() {
         	url: url,
         	dataType: 'json',
         	data: {
-            	'action': 'shift8_cdn_register',
+            	'action': 'shift8_cdn_push',
+                'type': 'register',
         	},
         	success:function(data) {
             	// This outputs the result of the ajax request
