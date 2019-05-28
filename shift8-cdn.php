@@ -83,11 +83,11 @@ function shift8_cdn_settings_page() {
 	</tr>
 	<tr valign="top">
     <th scope="row">Shift8 CDN API Key : </th>
-    <td><input type="text" id="shift8_cdn_api_field" name="shift8_cdn_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_api'))) ? '' : esc_attr(get_option('shift8_cdn_api'))); ?>" readonly></td>
+    <td><input type="text" id="shift8_cdn_api_field" name="shift8_cdn_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_api'))) ? '' : esc_attr(get_option('shift8_cdn_api'))); ?>"></td>
 	</tr>
 	<tr valign="top">
     <th scope="row">Shift8 CDN Prefix : </th>
-    <td><input type="text" id="shift8_cdn_prefix_field" name="shift8_cdn_prefix" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_prefix'))) ? '' : esc_attr(get_option('shift8_cdn_prefix'))); ?>" readonly></td>
+    <td><input type="text" id="shift8_cdn_prefix_field" name="shift8_cdn_prefix" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_prefix'))) ? '' : esc_attr(get_option('shift8_cdn_prefix'))); ?>"></td>
 	</tr>
     <?php if (!empty(esc_attr(get_option('shift8_cdn_prefix')))) { ?>
     <tr valign="top">
@@ -101,7 +101,7 @@ function shift8_cdn_settings_page() {
 </div>
 	<div class="shift8-cdn-button-container">
     Note : make sure you set your URL and email properly, then save the settings before registering.<br /><br />
-	<a id="shift8-cdn-push" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-register">Register</button></a>
+	<a id="shift8-cdn-register" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_register'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-register">Register</button></a>
 	<div class="shift8-cdn-response">
 	</div>
 <?php 

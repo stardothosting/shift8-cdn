@@ -22,10 +22,10 @@ function shift8_cdn_decrypt($key, $garble) {
 }
 
 // Handle the ajax trigger
-add_action( 'wp_ajax_shift8_cdn_push', 'shift8_cdn_push' );
-function shift8_cdn_push() {
-    if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['action'] == 'shift8_cdn_push') {
-        shift8_cdn_poll();
+add_action( 'wp_ajax_shift8_cdn_push', 'shift8_cdn_register' );
+function shift8_cdn_register() {
+    if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['action'] == 'shift8_cdn_register') {
+        shift8_cdn_poll('register');
         die();
     } else {
         die();
@@ -33,7 +33,7 @@ function shift8_cdn_push() {
 }
 
 // Handle the actual GET
-function shift8_cdn_poll() {
+function shift8_cdn_poll($shift8_action) {
     if (current_user_can('administrator')) {
         global $wpdb;
         global $shift8_cdn_table_name;
@@ -41,32 +41,71 @@ function shift8_cdn_poll() {
 
         $cdn_url = esc_attr(get_option('shift8_cdn_url'));
         $cdn_email = esc_attr(get_option('shift8_cdn_email'));
-        // Set headers for WP Remote get
+        $cdn_api = esc_attr(get_option('shift8_cdn_api'));
+
+        // Set headers for WP Remote post
         $headers = array(
             'Content-type: application/json',
             //'Authorization' => 'Basic ' . base64_encode($cdn_user . ':' . $cdn_api),
         );
 
-        // Use WP Remote Get to poll the cdn api 
-        $response = wp_remote_post( S8CDN_API . '/api/create',
-            array(
-                'method' => 'POST',
-                'headers' => $headers,
-                'httpversion' => '1.1',
-                'timeout' => '45',
-                'blocking' => true,
-                'body' => array(
-                    'url' => $cdn_url,
-                    'email' => $cdn_email
-                ),
-            )
-        );
+        // REGISTER
+        if ($shift8_action == 'register') {
+            // Use WP Remote Get to poll the cdn api 
+            $response = wp_remote_post( S8CDN_API . '/api/create',
+                array(
+                    'method' => 'POST',
+                    'headers' => $headers,
+                    'httpversion' => '1.1',
+                    'timeout' => '45',
+                    'blocking' => true,
+                    'body' => array(
+                        'url' => $cdn_url,
+                        'email' => $cdn_email
+                    ),
+                )
+            );
+        } else if ($shift8_action == 'delete') {
+            // Use WP Remote Get to poll the cdn api 
+            $response = wp_remote_post( S8CDN_API . '/api/delete',
+                array(
+                    'method' => 'POST',
+                    'headers' => $headers,
+                    'httpversion' => '1.1',
+                    'timeout' => '45',
+                    'blocking' => true,
+                    'body' => array(
+                        'url' => $cdn_url,
+                        'email' => $cdn_email,
+                        'api' => $cdn_api
+                    ),
+                )
+            );
+        } else if ($shift8_action == 'check') {
+            // Use WP Remote Get to poll the cdn api 
+            $response = wp_remote_get( S8CDN_API . '/api/check',
+                array(
+                    'method' => 'POST',
+                    'headers' => $headers,
+                    'httpversion' => '1.1',
+                    'timeout' => '45',
+                    'blocking' => true,
+                    'body' => array(
+                        'url' => $cdn_url,
+                        'email' => $cdn_email,
+                        'api' => $cdn_api
+                    ),
+                )
+            );
+        }
+
+        // Deal with the response
         if (is_array($response) && $response['response']['code'] == '200' && !json_decode($response['body'])->error) {
             echo $response['body'];
             update_option('shift8_cdn_api', esc_attr(json_decode($response['body'])->apikey));
             update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
         } else {
-            echo 'error_detected : ';
+            echo 'Error Detected : ';
             if (is_array($response['response'])) {
                 echo esc_attr(json_decode($response['body'])->error);
 

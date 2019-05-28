@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-	jQuery(document).on( 'click', '#shift8-cdn-push', function(e) {
+	jQuery(document).on( 'click', '#shift8-cdn-register', function(e) {
 		e.preventDefault();
 		var button = jQuery(this);
     	var url = button.attr('href');
@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
         	url: url,
         	dataType: 'json',
         	data: {
-            	'action': 'shift8_cdn_push',
+            	'action': 'shift8_cdn_register',
         	},
         	success:function(data) {
             	// This outputs the result of the ajax request
