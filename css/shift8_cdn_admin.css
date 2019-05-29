@@ -10,22 +10,46 @@
 .shift8-cdn-button-unregister {
     background-color: #f44336;
 }
+.shift8-cdn-button-check {
+    background-color: #f4cd36;
+}
 .shift8-cdn-button-register {
     background-color: #2ecc71;
 }
 .shift8-cdn-button-register:hover {
-    background-color: #39ff8d;
+    background-color: #5fd491;
+    cursor:pointer;
+}
+.shift8-cdn-button-check:hover {
+    background-color: #f9dd73;
+    cursor:pointer;
+}
+.shift8-cdn-button-unregister:hover {
+    background-color: #f57e75;
+    cursor:pointer;
 }
 .shift8-cdn-button-container {
 	text-align:center;
+	margin:0 auto;
+}
+.shift8-cdn-controls {
+	width:500px;
+	margin: 0 auto;
+	padding-top:25px;
+}
+.shift8-cdn-controls li {
+	float:left;
+	padding-right:25px;
 	margin:0 auto;
 }
 .shift8-cdn-table input {
     width:50%;
 }
 .shift8-cdn-response {
+	display:block;
+	text-align:center;
     font-size:18px;
-    padding-top:25px;
+    padding-top:80px;
 }
 .shift8-cdn-scrollabletextbox {
     background-color: #fff;
@@ -103,4 +127,11 @@ input:checked + .slider:before {
 	border-radius: 0;
 	height: 34px;
 	-webkit-appearance: none;
+}
+
+.shift8-cdn-admin-tab-active {
+    display:block;
+}
+.shift8-cdn-admin-tab-inactive {
+    display:none;
 }

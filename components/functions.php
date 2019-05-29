@@ -24,12 +24,21 @@ function shift8_cdn_decrypt($key, $garble) {
 // Handle the ajax trigger
 add_action( 'wp_ajax_shift8_cdn_push', 'shift8_cdn_push' );
 function shift8_cdn_push() {
+    // Register
     if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'register') {
         shift8_cdn_poll('register');
         die();
+    // Check
+    } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'check') {
+        shift8_cdn_poll('check');
+        die();
+    // Delete
+    } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'delete') {
+        shift8_cdn_poll('delete');
+        die();
     } else {
         die();
-    }
+    } 
 }
 
 // Handle the actual GET
@@ -65,9 +74,9 @@ function shift8_cdn_poll($shift8_action) {
                     ),
                 )
             );
-        } else if ($shift8_action == 'delete') {
+        } else if ($shift8_action == 'check') {
             // Use WP Remote Get to poll the cdn api 
-            $response = wp_remote_post( S8CDN_API . '/api/delete',
+            $response = wp_remote_get( S8CDN_API . '/api/check',
                 array(
                     'method' => 'POST',
                     'headers' => $headers,
@@ -81,9 +90,9 @@ function shift8_cdn_poll($shift8_action) {
                     ),
                 )
             );
-        } else if ($shift8_action == 'check') {
+        } else if ($shift8_action == 'delete') {
             // Use WP Remote Get to poll the cdn api 
-            $response = wp_remote_get( S8CDN_API . '/api/check',
+            $response = wp_remote_post( S8CDN_API . '/api/delete',
                 array(
                     'method' => 'POST',
                     'headers' => $headers,
