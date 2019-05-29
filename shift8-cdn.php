@@ -139,7 +139,7 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Support</th>
     </tr>
     <tr valign="top">
-    <td>If you are experiencing difficulties, you can receive support if you Visit the <a href="https://wordpress.org/support/plugin/shift8-cdn/" target="_new">Shift8 CDN Wordpress support page</a> and post your question there.
+    <td style="width:500px;">If you are experiencing difficulties, you can receive support if you Visit the <a href="https://wordpress.org/support/plugin/shift8-cdn/" target="_new">Shift8 CDN Wordpress support page</a> and post your question there.
     </td>
     </tr>
 </tbody>
