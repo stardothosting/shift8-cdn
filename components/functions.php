@@ -130,7 +130,7 @@ function shift8_cdn_rewrites( $rewrites ) {
         if (shift8_cdn_check_enabled()) {
             // Get all options configured as array
             $shift8_options = shift8_cdn_check_options();
-            $shift8_site_url = get_site_url();
+            $shift8_site_url = parse_url(get_site_url());
 
             $urls = array(
                 home_url( '/wp-content/uploads/' ),
@@ -140,9 +140,9 @@ function shift8_cdn_rewrites( $rewrites ) {
             );
 
             foreach( $urls as $in => $out ) {
-                $rewrites[$out] = str_replace( $shift8_site_url, 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX, $urls[$in] );
+                $url = parse_url($urls[$in]);
+                $rewrites[$out] = str_replace( $shift8_site_url['scheme'] . '://' . $shift8_site_url['host'], 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX, $urls[$in] );
             }
-
             return $rewrites;
         }
 }
