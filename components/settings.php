@@ -35,7 +35,7 @@ register_uninstall_hook( S8CDN_FILE, 'handle_shift8_cdn_uninstall_hook' );
 function shift8_cdn_url_validate($data){
 	if(filter_var($data, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
       $site_url = parse_url($data);
-   		return $site_url["scheme"] . '://' . $site_url["hostname"];
+      return $site_url["scheme"] . '://' . $site_url["host"];
    	} else {
    		add_settings_error(
             'shift8_cdn_url',
