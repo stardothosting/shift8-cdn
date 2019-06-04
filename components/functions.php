@@ -112,8 +112,11 @@ function shift8_cdn_poll($shift8_action) {
         if (is_array($response) && $response['response']['code'] == '200' && !json_decode($response['body'])->error) {
             update_option('shift8_cdn_api', esc_attr(json_decode($response['body'])->apikey));
             update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
-            // Update email in case they didn't save first and just hit register
-            update_option('shift8_cdn_email', esc_attr($cdn_email));
+            //echo esc_attr(json_decode($response['body'])->apikey);
+            echo json_encode(array(
+                'apikey' => esc_attr(json_decode($response['body'])->apikey),
+                'cdnprefix' => esc_attr(json_decode($response['body'])->cdnprefix),
+                ));
         } else {
             echo 'Error Detected : ';
             if (is_array($response['response'])) {

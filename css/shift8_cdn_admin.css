@@ -148,3 +148,8 @@ input:checked + .slider:before {
 	width: 216px;
 	height: 26px;
 }
+
+.shift8-cdn-prereg-note {
+	text-align:center;
+	font-weight:600;
+}
