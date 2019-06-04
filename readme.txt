@@ -1,10 +1,10 @@
 === Shift8 CDN ===
 * Contributors: shift8
 * Donate link: https://www.shift8web.ca
-* Tags: cdn, free cdn, speed, performance, wordpress cache, wordpress, wordpress automation, wordpress deploy, wordpress build, build, deployment, deploy, content delivery network, free, free content delivery, free content delivery network
+* Tags: cdn, free cdn, speed, performance, wordpress cache, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 5.2.1
-* Stable tag: 1.18
+* Stable tag: 1.19
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -141,3 +141,6 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 = 1.18 = 
 * Fixed bug on url validation for registration
+
+= 1.19 =
+* Force save of email in case user hits register without saving
