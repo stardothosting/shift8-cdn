@@ -4,7 +4,7 @@
 * Tags: cdn, free cdn, speed, performance, wordpress cache, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 5.2.1
-* Stable tag: 1.20
+* Stable tag: 1.21
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -147,3 +147,6 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 = 1.20 =
 * Fixed bug in ajax query processing of data returned. Added progress bar animation for interactions with CDN API. Added more clear instructions for first registering.
+
+= 1.21 =
+* Fixed bug with static constant of API URL
