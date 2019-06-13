@@ -32,6 +32,9 @@
 	text-align:center;
 	margin:0 auto;
 }
+.shift8-cdn-button-container a {
+	color: transparent !important;
+}
 .shift8-cdn-controls {
 	width:500px;
 	margin: 0 auto;
