@@ -19,7 +19,7 @@ This is a plugin that integrates a 100% free CDN service operated by Shift8, for
 4. Click the "Save Changes" button
 5. Click the green "Register" button.
 6. Once registered, the Api Key and CDN prefix fields will be populated and saved automatically
-7. Once registered, a "Test URL" link will appear. It takes a few minutes for your site to be registered and populated on our systems. Once the Test URL works (it should load a test image), you can switch on the CDN by clicking the ON/OFF
+7. Refresh the settings page and a "Test URL" link will appear. It takes a few minutes for your site to be registered and populated on our systems. Once the Test URL works (it should load a test image), you can switch on the CDN by clicking the ON/OFF button for "Enable Shift8 CDN".
  button for "Enable Shift8 CDN".
 8. All urls for media and static assets will be automatically rewritten to the CDN url. Any problems encountered can be resolved by turning off the CDN by switching off the "Enable Shift8 CDN" setting.
 
