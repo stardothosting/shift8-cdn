@@ -30,10 +30,8 @@ Fill out the survey here : [Shift8 CDN Survey](https://www.surveymonkey.com/r/ZH
 
 New endpoints added :
 
-- Warsaw, Poland
-- Singapore
-- Dallas, TX, USA
-- Miami, FL, USA
+- Frankfurt, Germany
+- Ukraine
 
 ## Free Content Delivery Network for your Static Content 
 
@@ -49,12 +47,14 @@ Current endpoints in use (more added regularly) :
 6. Europe - London, England
 7. Europe - Stockholm, Sweden
 8. Europe - Warsaw, Poland
-9. Asia Pacific - Hong Kong, China
-10. Asia Pacific - Tokyo, Japan
-11. Asia Pacific - Sydney, Australia
-12. Asia Pacific - Singapore
-13. Asia Pacific - Mumbai, India
-14. Latin America - Sao Paulo, Brazil
+9. Europe - Frankfurt, Germany
+10. Europe - Ukraine
+11. Asia Pacific - Hong Kong, China
+12. Asia Pacific - Tokyo, Japan
+13. Asia Pacific - Sydney, Australia
+14. Asia Pacific - Singapore
+15. Asia Pacific - Mumbai, India
+16. Latin America - Sao Paulo, Brazil
 
 You can learn more about how the CDN was setup and how it works by reading our [blog post](https://www.shift8web.ca/2019/05/how-we-created-our-own-free-content-delivery-network-for-wordpress-users/).
 
