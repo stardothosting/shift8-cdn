@@ -15,7 +15,6 @@ jQuery(document).ready(function() {
         	},
         	success:function(data) {
             	// This outputs the result of the ajax request
-                console.log(JSON.stringify(data));
                 if (data != null) {
                 	jQuery('#shift8_cdn_api_field').val(data.apikey);
                 	jQuery('#shift8_cdn_prefix_field').val(data.cdnprefix);
