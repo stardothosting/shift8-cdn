@@ -39,6 +39,7 @@ $plugin_name = $plugin_data['TextDomain'];
     ?>
 <h2 class="nav-tab-wrapper">
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=core_settings" class="nav-tab <?php echo $active_tab == 'core_settings' ? 'nav-tab-active' : ''; ?>">Core Settings</a>
+    <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options" class="nav-tab <?php echo $active_tab == 'cdn_options' ? 'nav-tab-active' : ''; ?>">CDN Settings</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=support_options" class="nav-tab <?php echo $active_tab == 'support_options' ? 'nav-tab-active' : ''; ?>">Support</a>
 </h2>
 
@@ -65,6 +66,9 @@ $plugin_name = $plugin_data['TextDomain'];
     settings_errors('shift8_cdn_email');
     settings_errors('shift8_cdn_api');
     settings_errors('shift8_cdn_prefix');
+    settings_errors('shift8_cdn_css');
+    settings_errors('shift8_cdn_js');
+    settings_errors('shift8_cdn_media');
     ?>
     </span></td>
 	</tr>
@@ -134,6 +138,24 @@ $plugin_name = $plugin_data['TextDomain'];
     <div class="shift8-cdn-response">
     </div>
     </td>
+    </tr>
+</tbody>
+    <!-- CDN SETTINGS TAB -->
+    <tbody class="<?php echo $active_tab == 'cdn_options' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
+    <tr valign="top">
+    <th scope="row">CDN Settings</th>
+    </tr>
+    <tr valign="top">
+    <th scope="row">Enable CDN for CSS files : </th>
+    <td><input type="checkbox" name="shift8_cdn_css" size="34"<?php echo (empty(esc_attr(get_option('shift8_cdn_css'))) ? '' : 'checked'); ?>></td>
+    </tr>
+    <tr valign="top">
+    <th scope="row">Enable CDN for JS files : </th>
+    <td><input type="checkbox" name="shift8_cdn_js" size="34" <?php echo (empty(esc_attr(get_option('shift8_cdn_js'))) ? '' : 'checked'); ?>></td>
+    </tr>
+    <tr valign="top">
+    <th scope="row">Enable CDN for Media files : </th>
+    <td><input type="checkbox" name="shift8_cdn_media" size="34" <?php echo (empty(esc_attr(get_option('shift8_cdn_media'))) ? '' : 'checked'); ?>></td>
     </tr>
 </tbody>
     <!-- SUPPORT TAB -->

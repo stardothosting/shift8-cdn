@@ -20,14 +20,21 @@ function register_shift8_cdn_settings() {
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_email', 'shift8_cdn_email_validate' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_api' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_prefix' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_css' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_js' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_media' );
 }
 
 // Uninstall hook
 function handle_shift8_cdn_uninstall_hook() {
+  delete_option('shift8_cdn_enabled');
   delete_option('shift8_cdn_url');
   delete_option('shift8_cdn_email');
   delete_option('shift8_cdn_api');
   delete_option('shift8_cdn_prefix');
+  delete_option('shift8_cdn_css');
+  delete_option('shift8_cdn_js');
+  delete_option('shift8_cdn_media');
 }
 register_uninstall_hook( S8CDN_FILE, 'handle_shift8_cdn_uninstall_hook' );
 
@@ -76,6 +83,9 @@ function shift8_cdn_check_options() {
   $shift8_options['cdn_email'] = esc_attr( get_option('shift8_cdn_email') );
   $shift8_options['cdn_api'] = esc_attr( get_option('shift8_cdn_api') );
   $shift8_options['cdn_prefix'] = esc_attr( get_option('shift8_cdn_prefix') );
+  $shift8_options['static_css'] = esc_attr( get_option('shift8_cdn_css') );
+  $shift8_options['static_js'] = esc_attr( get_option('shift8_cdn_js') );
+  $shift8_options['static_media'] = esc_attr( get_option('shift8_cdn_media') );
 
   return $shift8_options;
 }

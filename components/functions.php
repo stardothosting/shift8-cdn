@@ -137,8 +137,8 @@ function shift8_cdn_rewrites( $rewrites ) {
             $shift8_site_url = parse_url(get_site_url());
 
             $urls = array(
-                home_url( '/wp-content/' ),
-                home_url( '/wp-includes/' ),
+                home_url( 'wp-content' ),
+                home_url( 'wp-includes' ),
             );
 
             foreach( $urls as $in => $out ) {

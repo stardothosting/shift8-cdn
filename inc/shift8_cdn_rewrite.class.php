@@ -26,10 +26,18 @@ class Shift8_CDN {
 
 		// This is a critical point at which you must add rules for rewriting URL's
 		$rewrites = apply_filters( 'shift8_cdn_rewrites', array() );
+		$shift8_options = shift8_cdn_check_options();
 
 		// Loop through each rule and process it
 		foreach( $rewrites as $origin => $destination ) {
-			$content = str_replace( $origin, $destination, $content );
+			//$content = str_replace( $origin, $destination, $content );
+			$uri = parse_url($origin);
+			$origin_host = $uri['scheme'] . '://' . $uri['host'];
+			error_log("\n\ntest : " . $origin_host, 3, '/Applications/MAMP/logs/php_error.log');
+			$re = '/' . preg_quote( $origin_host, '/' ) . '(' . preg_quote($uri['path'], '/') . ')\/(.*?\.)(png|jpg|gif|js|css)/i';
+			$subst = 'http://cdndomain.com\1\2';
+			error_log("\n\nregex : " . $re, 3, '/Applications/MAMP/logs/php_error.log');
+			$content = preg_replace( $re, $subst, $content);
 		}
 
 		return $content;
