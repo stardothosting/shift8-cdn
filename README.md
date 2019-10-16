@@ -1,4 +1,4 @@
-=== Shift8 CDN ===
+# Shift8 CDN
 * Contributors: shift8
 * Donate link: https://www.shift8web.ca
 * Tags: cdn, free cdn, speed, performance, wordpress cache, content delivery network, free, free content delivery, free content delivery network
@@ -10,11 +10,11 @@
 
 This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site. What this means is that you can simply install this plugin, activate and register with our CDN service and all of your static assets on your website will be served through our global content delivery network.
 
-== Tell us where you want to see the next endpoint! ==
+## Tell us where you want to see the next endpoint! 
 
 Fill out the survey here : [Shift8 CDN Survey](https://www.surveymonkey.com/r/ZHZ59ZB) and tell us which country you want to see better coverage and we will expand the network!
 
-== Instructions for setup ==
+## Instructions for setup 
 
 1. Install and activate the plugin
 2. Navigate to settings page (Shift8 -> CDN Settings)
@@ -23,16 +23,19 @@ Fill out the survey here : [Shift8 CDN Survey](https://www.surveymonkey.com/r/ZH
 5. Click the green "Register" button.
 6. Once registered, the Api Key and CDN prefix fields will be populated and saved automatically
 7. Refresh the settings page and a "Test URL" link will appear. It takes a few minutes for your site to be registered and populated on our systems. Once the Test URL works (it should load a test image), you can switch on the CDN by clicking the ON/OFF button for "Enable Shift8 CDN".
-8. All urls for media and static assets will be automatically rewritten to the CDN url. Any problems encountered can be resolved by turning off the CDN by switching off the "Enable Shift8 CDN" setting.
+ button for "Enable Shift8 CDN".
+8. All urls for media and static assets will be automatically rewritten to the CDN url by default. You can navigate to the "CDN Settings" page to select which static file types you want the CDN to serve.
 
-== Newly added entpoints ==
+Any problems encountered can be resolved by turning off the CDN by switching off the "Enable Shift8 CDN" setting.
 
-New endpoints added : 
+## Newly added entpoints 
+
+New endpoints added :
 
 - Frankfurt, Germany
 - Ukraine
 
-== Free Content Delivery Network for your Static Content ==
+## Free Content Delivery Network for your Static Content 
 
 [Shift8](https://www.shift8web.ca) has rolled out a consistently-growing CDN with endpoints all over the world. This plugin will make your site load way faster by using latency-based and geographic-based DNS resolution for requests made to your site to be served by an endpoint closest to the user making the request. This means that a user making a request in Mumbai, India will hit the Mumbai server to download the static content from your website, improving performance remarkably.
 
@@ -43,7 +46,7 @@ Current endpoints in use (more added regularly) :
 3. USA - Dallas, TX
 4. USA - Miami, FL
 5. Canada - Toronto
-6. Europe - London, England 
+6. Europe - London, England
 7. Europe - Stockholm, Sweden
 8. Europe - Warsaw, Poland
 9. Europe - Frankfurt, Germany
@@ -57,20 +60,20 @@ Current endpoints in use (more added regularly) :
 
 You can learn more about how the CDN was setup and how it works by reading our [blog post](https://www.shift8web.ca/2019/05/how-we-created-our-own-free-content-delivery-network-for-wordpress-users/).
 
-== Want to see the plugin in action? ==
+## Want to see the plugin in action?
 
 You can view three example sites where this plugin is live :
 
 - Example Site 1 : [Wordpress Hosting](https://www.stackstar.com "Wordpress Hosting")
 - Example Site 2 : [Web Design in Toronto](https://www.shift8web.ca "Web Design in Toronto")
 
-== Features ==
+## Features
 
 - 100% Free CDN for static assets on your site (CSS, JS, Images, Font files and more)
 - Geographic and latency based DNS routing of requests to the nearest endpoint server across the globe
 - Super easy set up : just install plugin, activate and register to start using within minutes.
 
-== Installation ==
+## Installation
 
 This section describes how to install the plugin and get it working.
 
@@ -82,92 +85,92 @@ e.g.
 4. Hit the "Register" button to register your site with our CDN network.
 5. Within a few minutes the change will propagate to all our systems across the network.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions 
 
-= I tested it on my site and its not working for me! =
+### I tested it on my site and its not working for me!
 
 Send us an email to cdnhelp@shift8web.com or post in the support forums here and we will help. We are constnatly improving and updating the plugin also!
 
-= I noticed on lazy load images, the CDN isnt being used =
+### I noticed on lazy load images, the CDN isnt being used 
 
 This is a known issue with how lazy loading is implemented in some scenarios. Currently if you want the CDN to be used for lazy load images, you have to turn lazy load off.
 
-== Screenshots ==
+## Screenshots 
 
 1. Geographic Endpoints for Content Delivery Network
-2. Admin area settings 
+2. Admin area settings
 3. Before / After CDN performance improvement, taken from Pingdom
 
-== Changelog ==
+## Changelog 
 
-= 1.00 =
+### 1.00
 * Stable version created
 
-= 1.01 =
+### 1.01
 * Wordpress 5 compatibility
 
-= 1.02 =
+### 1.02
 * Got rewrite working for CDN
 
-= 1.03 =
+### 1.03
 * Cleanup
 
-= 1.04 =
+### 1.04 
 * Fixed str_replace function
 
-= 1.05 =
+### 1.05
 * Now rewriting wp-includes static assets
 
-= 1.06 =
+### 1.06
 * Updated readme
 
-= 1.07 =
+### 1.07
 * Added DNS prefetch for CDN
 
-= 1.08 =
+### 1.08
 * Added on/off switch to assist troubleshooting
 
-= 1.09 =
+### 1.09
 * Fixed bug in ruleset where undefined constant was being used
 
-= 1.10 =
+### 1.10
 * Added endpoints and instructional message on settings
 
-= 1.11 =
+### 1.11
 * Updated success register message, hover on register button, incorporate test URL before enabling
 
-= 1.12 =
+### 1.12
 * Fixed bug with register ajax query
 
-= 1.13 =
+### 1.13
 * Expanded API queries and settings for plugin. Added tabbed settings, support tab as well as feature to check and synchronize settings and delete your CDN
 
-= 1.14 =
+### 1.14
 * Fixed bug in static rules
 
-= 1.15 =
+### 1.15
 * Added version query to admin static elements to force refresh on further updates
 
-= 1.16 =
+### 1.16
 * Fixed bug with unregistered initial install
 
-= 1.17 =
+### 1.17
 * Fixed bug to not accidentally stripping URI when replacing urls with CDN for those sites in sub-folders
 
-= 1.18 = 
+### 1.18
 * Fixed bug on url validation for registration
 
-= 1.19 =
+### 1.19
 * Force save of email in case user hits register without saving
 
-= 1.20 =
+### 1.20
 * Fixed bug in ajax query processing of data returned. Added progress bar animation for interactions with CDN API. Added more clear instructions for first registering.
 
-= 1.21 =
+### 1.21
 * Fixed bug with static constant of API URL
 
-= 1.22 =
+### 1.22
 * Rewriting all wp-content URLs which weren't catching every static element prior
 
-= 1.25 =
+### 1.25
 * Added option in admin settings for choosing which type of static files you want the CDN to serve
