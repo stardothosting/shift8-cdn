@@ -147,7 +147,7 @@ $plugin_name = $plugin_data['TextDomain'];
     </tr>
     <tr valign="top">
     <th scope="row">Enable CDN for CSS files : </th>
-    <td><input type="checkbox" name="shift8_cdn_css" size="34"<?php echo (empty(esc_attr(get_option('shift8_cdn_css'))) ? '' : 'checked'); ?>></td>
+    <td><input type="checkbox" name="shift8_cdn_css" size="34" <?php echo (empty(esc_attr(get_option('shift8_cdn_css'))) ? '' : 'checked'); ?>></td>
     </tr>
     <tr valign="top">
     <th scope="row">Enable CDN for JS files : </th>

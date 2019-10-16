@@ -36,9 +36,8 @@ class Shift8_CDN {
 		if($shift8_options['static_js'] === 'on') $extensions[] = 'js';
 		if($shift8_options['static_media'] === 'on') $extensions[] = 'jpg|jpeg|png|gif|bmp|pdf|mp3|m4a|ogg|wav|mp4|m4v|mov|wmv|avi|mpg|ogv|3gp|3g2';
 
-		// Only apply the regex if at least one option is selected
+		// Only apply the regex if at least one static file type option is selected
 		if (!empty($extensions)) {
-
 			foreach ($extensions as $extension) {
 				if ($extension === end($extensions)) {
 					$extension_re .= $extension;
@@ -46,15 +45,12 @@ class Shift8_CDN {
 					$extension_re .= $extension . '|';
 				}
 			}
-			// Loop through each rule and process it
+			// Loop through each rule and process it using regex to pattern match static files
 			foreach( $rewrites as $origin => $destination ) {
-				//$content = str_replace( $origin, $destination, $content );
 				$uri = parse_url($origin);
 				$origin_host = $uri['scheme'] . '://' . $uri['host'];
-				//error_log("\n\ntest : " . $origin_host, 3, '/Applications/MAMP/logs/php_error.log');
 				$re = '/' . preg_quote( $origin_host, '/' ) . '(' . preg_quote($uri['path'], '/') . '\/)(.*?\.)(' . $extension_re . ')/i';
-				$subst = 'http://cdndomain.com\1\2';
-				//error_log("\n\nregex : " . $re, 3, '/Applications/MAMP/logs/php_error.log');
+				$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '\1\2\3';
 				$content = preg_replace( $re, $subst, $content);
 			}
 

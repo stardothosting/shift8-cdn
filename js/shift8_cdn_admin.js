@@ -18,7 +18,6 @@ jQuery(document).ready(function() {
                 if (data != null) {
                 	jQuery('#shift8_cdn_api_field').val(data.apikey);
                 	jQuery('#shift8_cdn_prefix_field').val(data.cdnprefix);
-                    //jQuery('#shift8_cdn_prefix_field').val(data.email);
                 }
                 jQuery('.shift8-cdn-response').html('Please allow for 5 minutes for CDN to be deployed across the network. Check the test URL and dont forget to enable!').fadeIn();
                 setTimeout(function(){ jQuery('.shift8-cdn-response').fadeOut() }, 25000);
@@ -51,6 +50,7 @@ jQuery(document).ready(function() {
                 if (data != null) {
                     jQuery('#shift8_cdn_api_field').val(data.apikey);
                     jQuery('#shift8_cdn_prefix_field').val(data.cdnprefix);
+                    //jQuery('#shift8_cdn_email_field').val(data.email);
                 }
                 jQuery('.shift8-cdn-response').html('Values have been checked & re-populated from CDN settings.').fadeIn();
                 setTimeout(function(){ jQuery('.shift8-cdn-response').fadeOut() }, 25000);
