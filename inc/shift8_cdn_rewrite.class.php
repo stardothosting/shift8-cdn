@@ -34,7 +34,7 @@ class Shift8_CDN {
 		// Build regex extensions
 		if($shift8_options['static_css'] === 'on') $extensions[] = 'css';
 		if($shift8_options['static_js'] === 'on') $extensions[] = 'js';
-		if($shift8_options['static_media'] === 'on') $extensions[] = 'jpg|jpeg|png|gif|bmp|pdf|mp3|m4a|ogg|wav|mp4|m4v|mov|wmv|avi|mpg|ogv|3gp|3g2';
+		if($shift8_options['static_media'] === 'on') $extensions[] = 'jpg|jpeg|png|gif|bmp|pdf|mp3|m4a|ogg|wav|mp4|m4v|mov|wmv|avi|mpg|ogv|3gp|3g2|webp';
 
 		// Only apply the regex if at least one static file type option is selected
 		if (!empty($extensions)) {
