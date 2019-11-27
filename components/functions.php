@@ -49,7 +49,6 @@ function shift8_cdn_poll($shift8_action) {
         $current_user = wp_get_current_user();
 
         $cdn_url = esc_attr(get_option('shift8_cdn_url'));
-        $cdn_email = esc_attr(get_option('shift8_cdn_email'));
         $cdn_api = esc_attr(get_option('shift8_cdn_api'));
 
         // Set headers for WP Remote post
@@ -58,23 +57,8 @@ function shift8_cdn_poll($shift8_action) {
             //'Authorization' => 'Basic ' . base64_encode($cdn_user . ':' . $cdn_api),
         );
 
-        // REGISTER
-        if ($shift8_action == 'register') {
-            // Use WP Remote Get to poll the cdn api 
-            $response = wp_remote_post( S8CDN_API . '/api/create',
-                array(
-                    'method' => 'POST',
-                    'headers' => $headers,
-                    'httpversion' => '1.1',
-                    'timeout' => '45',
-                    'blocking' => true,
-                    'body' => array(
-                        'url' => $cdn_url,
-                        'email' => $cdn_email
-                    ),
-                )
-            );
-        } else if ($shift8_action == 'check') {
+        // Check values with dashboard
+        if ($shift8_action == 'check') {
             // Use WP Remote Get to poll the cdn api 
             $response = wp_remote_get( S8CDN_API . '/api/check',
                 array(
@@ -85,23 +69,6 @@ function shift8_cdn_poll($shift8_action) {
                     'blocking' => true,
                     'body' => array(
                         'url' => $cdn_url,
-                        'email' => $cdn_email,
-                        'api' => $cdn_api
-                    ),
-                )
-            );
-        } else if ($shift8_action == 'delete') {
-            // Use WP Remote Get to poll the cdn api 
-            $response = wp_remote_post( S8CDN_API . '/api/delete',
-                array(
-                    'method' => 'POST',
-                    'headers' => $headers,
-                    'httpversion' => '1.1',
-                    'timeout' => '45',
-                    'blocking' => true,
-                    'body' => array(
-                        'url' => $cdn_url,
-                        'email' => $cdn_email,
                         'api' => $cdn_api
                     ),
                 )

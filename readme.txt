@@ -3,27 +3,38 @@
 * Donate link: https://www.shift8web.ca
 * Tags: cdn, free cdn, speed, performance, wordpress cache, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
-* Tested up to: 5.2.4
-* Stable tag: 1.26
+* Tested up to: 5.3
+* Stable tag: 1.30
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site. What this means is that you can simply install this plugin, activate and register with our CDN service and all of your static assets on your website will be served through our global content delivery network.
 
-== Tell us where you want to see the next endpoint! ==
+== Check out our new Shift8 CDN website ==
 
-Fill out the survey here : [Shift8 CDN Survey](https://www.surveymonkey.com/r/ZHZ59ZB) and tell us which country you want to see better coverage and we will expand the network!
+You can now create your own dashboard account to add/remove/manage your sites : [Shift8 CDN](https://shift8cdn.com). Note if you have a site created prior to this dashboard, you can submit a request on the support forums and we can migrate the site for you.
 
 == Instructions for setup ==
 
-1. Install and activate the plugin
-2. Navigate to settings page (Shift8 -> CDN Settings)
-3. Make sure the "Site URL" and "Your Email" fields are correct and populated.
-4. Click the "Save Changes" button
-5. Click the green "Register" button.
-6. Once registered, the Api Key and CDN prefix fields will be populated and saved automatically
-7. Refresh the settings page and a "Test URL" link will appear. It takes a few minutes for your site to be registered and populated on our systems. Once the Test URL works (it should load a test image), you can switch on the CDN by clicking the ON/OFF button for "Enable Shift8 CDN".
-8. All urls for media and static assets will be automatically rewritten to the CDN url. Any problems encountered can be resolved by turning off the CDN by switching off the "Enable Shift8 CDN" setting.
+1. Register for an account by [CLICKING HERE](https://shift8cdn.com/register)
+2. Once your account is activated, [go to the Shift8 CDN dashboard](http://shift8cdn.local/sites) and click "Create Site"
+3. Enter your site URL exactly as it appears (i.e. https://www.yoursite.com) and click "Add"
+4. Once added successfully, click "View" to view the site details and copy the API key and CDN prefix 
+6. Install this Wordpress plugin and activate
+7. Go to the plugin settings page (Shift8 > CDN Settings) and enter the site url, API key and CDN prefix and then click "Save Changes"
+8. Once saved, you can click the "Check" button to ensure everything matches with our system
+9. Click the "Test URL" to ensure it actually works and if so , click "Enable Shift8 CDN" at the top of the settings page to enable. You can use this to quickly disable if there are any problems. 
+
+== Instructions for upgrading from a version prior to 1.30 ==
+
+1. It is important before you upgrade the plugin to disable the CDN and unregister your site. Your site needs to be unregistered before upgrading, otherwise we will have to manually migrate the site for you
+2. Once the "Enable Shift8 CDN" setting is disabled, and your site is unregistered, update the plugin via the Wordpress plugin update system
+3. Once the plugin is updated, head to our site to [register your account](https://shift8cdn.com/register) on our systems
+4. Enter your site URL exactly as it appears (i.e. https://www.yoursite.com) and click "Add"
+5. Once added successfully, click "View" to view the site details and copy the API key and CDN prefix
+6. Go back to the plugin settings page (Shift8 > CDN Settings) and enter the site url, API key and CDN prefix and then click "Save Changes"
+7. Once saved, you can click the "Check" button to ensure everything matches with our system
+8. Click the "Test URL" to ensure it actually works and if so , click "Enable Shift8 CDN" at the top of the settings page to enable. You can use this to quickly disable if there are any problems.
 
 == Newly added entpoints ==
 
@@ -86,7 +97,7 @@ e.g.
 
 = I tested it on my site and its not working for me! =
 
-Send us an email to cdnhelp@shift8web.com or post in the support forums here and we will help. We are constnatly improving and updating the plugin also!
+Send us an email to cdnhelp@shift8web.com or post in the support forums here and we will help. We are constantly improving and updating the plugin also!
 
 = I noticed on lazy load images, the CDN isnt being used =
 
@@ -174,3 +185,9 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 = 1.26 =
 * Included webp extensions for media file CDN rewrite function
+
+= 1.30 =
+* Removed register API query
+* Removed email field in settings
+* Added instructions in settings area if unregistered
+* Updated readme with new instructions

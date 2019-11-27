@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.26
+ * Version: 1.30
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -63,7 +63,6 @@ $plugin_name = $plugin_data['TextDomain'];
     <td><span id="shift8-cdn-notice">
     <?php 
     settings_errors('shift8_cdn_url');
-    settings_errors('shift8_cdn_email');
     settings_errors('shift8_cdn_api');
     settings_errors('shift8_cdn_prefix');
     settings_errors('shift8_cdn_css');
@@ -93,10 +92,6 @@ $plugin_name = $plugin_data['TextDomain'];
     <td><input type="text" name="shift8_cdn_url" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))); ?>"> Note : Only enter site, no URI</td>
 	</tr>
 	<tr valign="top">
-    <th scope="row">Your Email : </th>
-    <td><input type="text" name="shift8_cdn_email" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_email'))) ? '' : esc_attr(get_option('shift8_cdn_email'))); ?>"></td>
-	</tr>
-	<tr valign="top">
     <th scope="row">Shift8 CDN API Key : </th>
     <td><input type="text" id="shift8_cdn_api_field" name="shift8_cdn_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_api'))) ? '' : esc_attr(get_option('shift8_cdn_api'))); ?>"> <small>Keep this safe!</small></td>
 	</tr>
@@ -119,18 +114,13 @@ $plugin_name = $plugin_data['TextDomain'];
     <ul class="shift8-cdn-controls">
     <li>
     <div class="shift8-cdn-button-container">
-    <a id="shift8-cdn-register" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-register">Register</button></a>
+    <button onclick="window.open('<?php echo S8CDN_API . "/register"; ?>','_blank')" class="shift8-cdn-button shift8-cdn-button-register">Register</button>
     </div>
     </li>
     <?php if (!empty(esc_attr(get_option('shift8_cdn_api')))) { ?>
     <li>
     <div class="shift8-cdn-button-container">
     <a id="shift8-cdn-check" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-check">Check</button></a>
-    </div>
-    </li>
-    <li>
-    <div class="shift8-cdn-button-container">
-    <a id="shift8-cdn-unregister" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-unregister">Unregister</button></a>
     </div>
     </li>
     <?php } ?>
