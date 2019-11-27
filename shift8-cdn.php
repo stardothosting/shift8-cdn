@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.30
+ * Version: 1.31
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -109,7 +109,7 @@ $plugin_name = $plugin_data['TextDomain'];
     <td width="226px"><div class="shift8-cdn-spinner"></div></td>
     <td>
     <?php if (empty(esc_attr(get_option('shift8_cdn_api')))) { ?>
-    <div class="shift8-cdn-prereg-note">Note : make sure you set your URL and email properly, then hit "Save changes" before registering.</div>
+    <div class="shift8-cdn-prereg-note">Note : You need to register in our dashboard first. Click "Register" below and add your site via our dashboard. Then copy the information back here and hit save.</div>
     <?php } ?>
     <ul class="shift8-cdn-controls">
     <li>
