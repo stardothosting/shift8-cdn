@@ -28,6 +28,12 @@
     background-color: #f57e75;
     cursor:pointer;
 }
+.shift8-cdn-button-copyclipboard {
+    background-color: #f436d4;
+}
+.shift8-cdn-button-copyclipboard:hover {
+    background-color: #6f1660;
+}
 .shift8-cdn-button-container {
 	text-align:center;
 	margin:0 auto;

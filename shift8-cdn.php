@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.31
+ * Version: 1.32
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -41,6 +41,7 @@ $plugin_name = $plugin_data['TextDomain'];
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=core_settings" class="nav-tab <?php echo $active_tab == 'core_settings' ? 'nav-tab-active' : ''; ?>">Core Settings</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options" class="nav-tab <?php echo $active_tab == 'cdn_options' ? 'nav-tab-active' : ''; ?>">CDN Settings</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=support_options" class="nav-tab <?php echo $active_tab == 'support_options' ? 'nav-tab-active' : ''; ?>">Support</a>
+    <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=debug_info" class="nav-tab <?php echo $active_tab == 'debug_info' ? 'nav-tab-active' : ''; ?>">Debug Info</a>
 </h2>
 
 <form method="post" action="options.php">
@@ -129,7 +130,7 @@ $plugin_name = $plugin_data['TextDomain'];
     </div>
     </td>
     </tr>
-</tbody>
+    </tbody>
     <!-- CDN SETTINGS TAB -->
     <tbody class="<?php echo $active_tab == 'cdn_options' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
     <tr valign="top">
@@ -147,7 +148,7 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Enable CDN for Media files : </th>
     <td><input type="checkbox" name="shift8_cdn_media" size="34" <?php echo (empty(esc_attr(get_option('shift8_cdn_media'))) ? '' : 'checked'); ?>></td>
     </tr>
-</tbody>
+    </tbody>
     <!-- SUPPORT TAB -->
     <tbody class="<?php echo $active_tab == 'support_options' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
     <tr valign="top">
@@ -157,10 +158,44 @@ $plugin_name = $plugin_data['TextDomain'];
     <td style="width:500px;">If you are experiencing difficulties, you can receive support if you Visit the <a href="https://wordpress.org/support/plugin/shift8-cdn/" target="_new">Shift8 CDN Wordpress support page</a> and post your question there.
     </td>
     </tr>
-</tbody>
+    </tbody>
+    <!-- DEBUG TAB -->
+    <tbody class="<?php echo $active_tab == 'debug_info' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
+    <tr valign="top">
+    <th scope="row">Debug Info</th>
+    </tr>
+    <tr valign="top">
+    <td style="width:500px;">Providing this information to the Shift8 CDN support team may be helpful in them assisting in diagnosing any issues you may be having. <br /><br /> 
+    <div class="shift8-cdn-button-container">
+    </div><button class="shift8-cdn-button shift8-cdn-button-copyclipboard" id="button1" onclick="Shift8CDNCopyToClipboard('shift8cdn-debug')">Copy info below to clipboard</button>
+    <br /><br />
+    <script type="text/javascript">
+        function showDetails(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+        function hideDetails(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+    </script>
+    <div class="wrap">
+        <div class="postbox" id="shift8cdn-debug">
+            <h2><?php _e('Shift8 CDN Debug Info'); ?></h2>
+            <p><?php echo shift8_cdn_debug_version_check(); ?></p>
+        </div>
+        <!--<div class="postbox" id="shift8cdn-debugphp">
+            <h2><?php _e('Shift8 CDN PHP Debug Info'); ?></h2>
+            <p><?php _e('For more detailed PHP server related information, click the Show Details link below.'); ?></p>
+            <a href="#" onclick="showDetails('details'); return false;"><?php _e('Show Details'); ?></a>
+            <a href="#" onclick="hideDetails('details'); return false;"><?php _e('Hide Details'); ?></a>
+            <span id="details" style="display: none;"><?php echo shift8_cdn_debug_get_php_info(); ?></span>
+        </div>-->
+    </div>
+    </td>
+    </tr>
+    </tbody>
     </table>
     <?php 
-    if ($active_tab != 'support_options') {
+    if ($active_tab !== 'support_options' && $active_tab !== 'debug_info') {
         submit_button(); 
     }
     ?>

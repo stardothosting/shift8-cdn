@@ -129,3 +129,97 @@ function shift8_cdn_prefetch() {
 }
 
 add_action('wp_head', 'shift8_cdn_prefetch', 0);
+
+
+// Functions to produce debugging information
+
+function shift8_cdn_debug_get_php_info() {
+    //retrieve php info for current server
+    if (!function_exists('ob_start') || !function_exists('phpinfo') || !function_exists('ob_get_contents') || !function_exists('ob_end_clean') || !function_exists('preg_replace')) {
+        echo 'This information is not available.';
+    } else {
+        ob_start();
+        phpinfo();
+        $pinfo = ob_get_contents();
+        ob_end_clean();
+
+        $pinfo = preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1',$pinfo);
+        echo $pinfo;
+    }
+}
+
+function shift8_cdn_debug_get_mysql_version() {
+        global $wpdb;
+        $rows = $wpdb->get_results('select version() as mysqlversion');
+        if (!empty($rows)) {
+             return $rows[0]->mysqlversion;
+        }
+        return false;
+    }
+
+function shift8_cdn_debug_version_check() {
+    //outputs basic information
+    $notavailable = __('This information is not available.');
+    if ( !function_exists( 'get_bloginfo' ) ) {
+        $wp = $notavailable;
+    } else {
+        $wp = get_bloginfo( 'version' );
+    }
+
+    if ( !function_exists( 'wp_get_theme' ) ) {
+        $theme = $notavailable;
+    } else {
+        $theme = wp_get_theme();
+    }
+
+    if ( !function_exists( 'get_plugins' ) ) {
+        $plugins = $notavailable;
+    } else {
+        $plugins_list = get_plugins();
+        if( is_array( $plugins_list ) ){
+            $active_plugins = '';
+            $plugins = '<ul>';
+            foreach ( $plugins_list as $plugin ) {
+                $version = '' != $plugin['Version'] ? $plugin['Version'] : __( 'Unversioned', 'debug-info' );
+                if( !empty( $plugin['PluginURI'] ) ){
+                    $plugins .= '<li><a href="' . $plugin['PluginURI'] . '">' . $plugin['Name'] . '</a> (' . $version . ')</li>';
+                } else {
+                    $plugins .= '<li>' . $plugin['Name'] . ' (' . $version . ')</li>';
+                }
+            }
+            $plugins .= '</ul>';
+        }
+    }
+
+    if ( !function_exists( 'phpversion' ) ) {
+        $php = $notavailable;
+    } else {
+        $php = phpversion();
+    }
+
+    if ( !function_exists( 'debug_info_get_mysql_version' ) ) {
+        $mysql = $notavailable;
+    } else {
+        $mysql = debug_info_get_mysql_version();
+    }
+
+    if ( !function_exists( 'apache_get_version' ) ) {
+        $apache = $notavailable;
+    } else {
+        $apache = apache_get_version();
+    }
+
+    $themeversion   = $theme->get( 'Name' ) . __( ' version ', 'debug-info' ) . $theme->get( 'Version' ) . $theme->get( 'Template' );
+    $themeauth      = $theme->get( 'Author' ) . ' - ' . $theme->get( 'AuthorURI' );
+    $uri            = $theme->get( 'ThemeURI' );
+
+    echo '<strong>' . __( 'WordPress Version: ' ) . '</strong>' . $wp . '<br />';
+    echo '<strong>' . __( 'Current WordPress Theme: ' ) . '</strong>' . $themeversion . '<br />';
+    echo '<strong>' . __( 'Theme Author: ' ) . '</strong>' . $themeauth . '<br />';
+    echo '<strong>' . __( 'Theme URI: ' ) . '</strong>' . $uri . '<br />';
+    echo '<strong>' . __( 'PHP Version: ' ) . '</strong>' . $php . '<br />';
+    echo '<strong>' . __( 'MySQL Version: ' ) . '</strong>' . $mysql . '<br />';
+    echo '<strong>' . __( 'Apache Version: ' ) . '</strong>' . $apache . '<br />';
+    echo '<strong>' . __( 'Active Plugins: ' ) . '</strong>' . $plugins . '<br />';
+
+}
