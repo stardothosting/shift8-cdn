@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.33
+ * Version: 1.34
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -41,7 +41,6 @@ $plugin_name = $plugin_data['TextDomain'];
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=core_settings" class="nav-tab <?php echo $active_tab == 'core_settings' ? 'nav-tab-active' : ''; ?>">Core Settings</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options" class="nav-tab <?php echo $active_tab == 'cdn_options' ? 'nav-tab-active' : ''; ?>">CDN Settings</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=support_options" class="nav-tab <?php echo $active_tab == 'support_options' ? 'nav-tab-active' : ''; ?>">Support</a>
-    <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=debug_info" class="nav-tab <?php echo $active_tab == 'debug_info' ? 'nav-tab-active' : ''; ?>">Debug Info</a>
 </h2>
 
 <form method="post" action="options.php">
@@ -155,17 +154,9 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Support</th>
     </tr>
     <tr valign="top">
-    <td style="width:500px;">If you are experiencing difficulties, you can receive support if you Visit the <a href="https://wordpress.org/support/plugin/shift8-cdn/" target="_new">Shift8 CDN Wordpress support page</a> and post your question there.
-    </td>
-    </tr>
-    </tbody>
-    <!-- DEBUG TAB -->
-    <tbody class="<?php echo $active_tab == 'debug_info' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
-    <tr valign="top">
-    <th scope="row">Debug Info</th>
-    </tr>
-    <tr valign="top">
-    <td style="width:500px;">Providing this information to the Shift8 CDN support team may be helpful in them assisting in diagnosing any issues you may be having. <br /><br /> 
+    <td style="width:500px;">If you are experiencing difficulties, you can receive support if you Visit the <a href="https://wordpress.org/support/plugin/shift8-cdn/" target="_new">Shift8 CDN Wordpress support page</a> and post your question there.<Br /><Br />
+    <strong>Debug Info</strong><br /><br />
+    Providing the debug information below to the Shift8 CDN support team may be helpful in them assisting in diagnosing any issues you may be having. <br /><br />
     <div class="shift8-cdn-button-container">
     </div><button class="shift8-cdn-button shift8-cdn-button-copyclipboard" id="button1" onclick="Shift8CDNCopyToClipboard('shift8cdn-debug')">Copy info below to clipboard</button>
     <br /><br />
@@ -195,7 +186,7 @@ $plugin_name = $plugin_data['TextDomain'];
     </tbody>
     </table>
     <?php 
-    if ($active_tab !== 'support_options' && $active_tab !== 'debug_info') {
+    if ($active_tab !== 'support_options') {
         submit_button(); 
     }
     ?>
