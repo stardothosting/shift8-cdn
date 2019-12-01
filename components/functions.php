@@ -148,15 +148,6 @@ function shift8_cdn_debug_get_php_info() {
     }
 }
 
-function shift8_cdn_debug_get_mysql_version() {
-        global $wpdb;
-        $rows = $wpdb->get_results('select version() as mysqlversion');
-        if (!empty($rows)) {
-             return $rows[0]->mysqlversion;
-        }
-        return false;
-    }
-
 function shift8_cdn_debug_version_check() {
     //outputs basic information
     $notavailable = __('This information is not available.');
@@ -197,17 +188,6 @@ function shift8_cdn_debug_version_check() {
         $php = phpversion();
     }
 
-    if ( !function_exists( 'debug_info_get_mysql_version' ) ) {
-        $mysql = $notavailable;
-    } else {
-        $mysql = debug_info_get_mysql_version();
-    }
-
-    if ( !function_exists( 'apache_get_version' ) ) {
-        $apache = $notavailable;
-    } else {
-        $apache = apache_get_version();
-    }
 
     $themeversion   = $theme->get( 'Name' ) . __( ' version ', 'debug-info' ) . $theme->get( 'Version' ) . $theme->get( 'Template' );
     $themeauth      = $theme->get( 'Author' ) . ' - ' . $theme->get( 'AuthorURI' );
@@ -218,8 +198,6 @@ function shift8_cdn_debug_version_check() {
     echo '<strong>' . __( 'Theme Author: ' ) . '</strong>' . $themeauth . '<br />';
     echo '<strong>' . __( 'Theme URI: ' ) . '</strong>' . $uri . '<br />';
     echo '<strong>' . __( 'PHP Version: ' ) . '</strong>' . $php . '<br />';
-    echo '<strong>' . __( 'MySQL Version: ' ) . '</strong>' . $mysql . '<br />';
-    echo '<strong>' . __( 'Apache Version: ' ) . '</strong>' . $apache . '<br />';
     echo '<strong>' . __( 'Active Plugins: ' ) . '</strong>' . $plugins . '<br />';
 
 }
