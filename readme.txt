@@ -17,7 +17,7 @@ You can now create your own dashboard account to add/remove/manage your sites : 
 == Instructions for setup ==
 
 1. Register for an account by [CLICKING HERE](https://shift8cdn.com/register)
-2. Once your account is activated, [go to the Shift8 CDN dashboard](http://shift8cdn.local/sites) and click "Create Site"
+2. Once your account is activated, [go to the Shift8 CDN dashboard](https://shift8cdn.com/dashboard) and click "Create Site"
 3. Enter your site URL exactly as it appears (i.e. https://www.yoursite.com) and click "Add"
 4. Once added successfully, click "View" to view the site details and copy the API key and CDN prefix 
 6. Install this Wordpress plugin and activate
