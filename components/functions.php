@@ -36,6 +36,10 @@ function shift8_cdn_push() {
     } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'delete') {
         shift8_cdn_poll('delete');
         die();
+    // Purge
+    } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'purge') {
+        shift8_cdn_poll('purge');
+        die();
     } else {
         die();
     } 
@@ -73,17 +77,40 @@ function shift8_cdn_poll($shift8_action) {
                     ),
                 )
             );
+        // Submit purge request
+        } else if ($shift8_action == 'purge') {
+            // Use WP Remote Get to poll the cdn api 
+            $response = wp_remote_get( S8CDN_API . '/api/purge',
+                array(
+                    'method' => 'POST',
+                    'headers' => $headers,
+                    'httpversion' => '1.1',
+                    'timeout' => '45',
+                    'blocking' => true,
+                    'body' => array(
+                        'url' => $cdn_url,
+                        'api' => $cdn_api
+                    ),
+                )
+            );
         }
 
         // Deal with the response
         if (is_array($response) && $response['response']['code'] == '200' && !json_decode($response['body'])->error) {
-            update_option('shift8_cdn_api', esc_attr(json_decode($response['body'])->apikey));
-            update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
-            //echo esc_attr(json_decode($response['body'])->apikey);
-            echo json_encode(array(
+            // Populate options from response if its a check
+            if ($shift8_action == 'check') {
+                update_option('shift8_cdn_api', esc_attr(json_decode($response['body'])->apikey));
+                update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
+                echo json_encode(array(
                 'apikey' => esc_attr(json_decode($response['body'])->apikey),
                 'cdnprefix' => esc_attr(json_decode($response['body'])->cdnprefix),
                 ));
+            } else if ($shift8_action == 'purge') {
+                echo json_encode(array(
+                    'response' => esc_attr(json_decode($response['body'])->response)
+                ));
+            }
+
         } else {
             echo 'Error Detected : ';
             if (is_array($response['response'])) {

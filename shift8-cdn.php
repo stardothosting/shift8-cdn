@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.34
+ * Version: 1.35
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -39,6 +39,7 @@ $plugin_name = $plugin_data['TextDomain'];
     ?>
 <h2 class="nav-tab-wrapper">
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=core_settings" class="nav-tab <?php echo $active_tab == 'core_settings' ? 'nav-tab-active' : ''; ?>">Core Settings</a>
+    <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_purge" class="nav-tab <?php echo $active_tab == 'cdn_purge' ? 'nav-tab-active' : ''; ?>">Purge Cache</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options" class="nav-tab <?php echo $active_tab == 'cdn_options' ? 'nav-tab-active' : ''; ?>">CDN Settings</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=support_options" class="nav-tab <?php echo $active_tab == 'support_options' ? 'nav-tab-active' : ''; ?>">Support</a>
 </h2>
@@ -130,6 +131,27 @@ $plugin_name = $plugin_data['TextDomain'];
     </td>
     </tr>
     </tbody>
+    <!-- CDN PURGE TAB -->
+    <tbody class="<?php echo $active_tab == 'cdn_purge' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
+    <tr valign="top">
+    <th scope="row">Purge Cache</th>
+    </tr>
+    <tr valign="top">
+    <td>    
+        <div class="shift8-cdn-button-container">
+            <a id="shift8-cdn-purge" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-register">Purge</button></a>
+        </div>
+    </td>
+    </tr>
+    <tr valign="top">
+    <td width="226px"><div class="shift8-cdn-purge-spinner"></div></td>
+    </tr>
+    <tr>
+    <td>
+        <div class="shift8-cdn-purge-response"></div>
+    </td>
+    </tr>
+    </tbody>
     <!-- CDN SETTINGS TAB -->
     <tbody class="<?php echo $active_tab == 'cdn_options' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
     <tr valign="top">
@@ -186,7 +208,7 @@ $plugin_name = $plugin_data['TextDomain'];
     </tbody>
     </table>
     <?php 
-    if ($active_tab !== 'support_options') {
+    if ($active_tab !== 'support_options' && $active_tab !== 'cdn_purge') {
         submit_button(); 
     }
     ?>

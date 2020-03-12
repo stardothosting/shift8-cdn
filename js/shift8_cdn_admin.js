@@ -31,6 +31,34 @@ jQuery(document).ready(function() {
             }
         }); 
     });
+
+    // Check & synchronize config of CDN account
+    jQuery(document).on( 'click', '#shift8-cdn-purge', function(e) {
+        jQuery(".shift8-cdn-purge-spinner").show();
+        e.preventDefault();
+        var button = jQuery(this);
+        var url = button.attr('href');
+        jQuery.ajax({
+            url: url,
+            dataType: 'json',
+            data: {
+                'action': 'shift8_cdn_push',
+                'type': 'purge'
+            },
+            success:function(data) {
+                console.log(JSON.stringify(data));
+                jQuery('.shift8-cdn-purge-response').html(data.response).fadeIn();
+                setTimeout(function(){ jQuery('.shift8-cdn-purge-response').fadeOut() }, 25000);
+                jQuery(".shift8-cdn-purge-spinner").hide();               
+            },
+            error: function(errorThrown){
+                console.log('Error : ' + JSON.stringify(errorThrown));
+                jQuery('.shift8-cdn-purge-response').html(errorThrown.responseText).fadeIn();
+                setTimeout(function(){ jQuery('.shift8-cdn-purge-response').fadeOut() }, 5000);
+                jQuery(".shift8-cdn-purge-spinner").hide();
+            }
+        }); 
+    });
 });
 
 

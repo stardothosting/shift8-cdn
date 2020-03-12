@@ -60,6 +60,12 @@
     font-size:18px;
     padding-top:80px;
 }
+.shift8-cdn-purge-response {
+	display:block;
+	text-align:center;
+    font-size:18px;
+    width:100%;
+}
 .shift8-cdn-scrollabletextbox {
     background-color: #fff;
     height:200px;
@@ -146,6 +152,18 @@ input:checked + .slider:before {
 }
 
 .shift8-cdn-spinner {
+	background: url('/wp-includes/js/thickbox/loadingAnimation.gif') no-repeat;
+	background-size: 216px 26px;
+	display: none;
+	text-align:center;
+	left:0;
+	right:0;
+	opacity: .8;
+	filter: alpha(opacity=80);
+	width: 216px;
+	height: 26px;
+}
+.shift8-cdn-purge-spinner {
 	background: url('/wp-includes/js/thickbox/loadingAnimation.gif') no-repeat;
 	background-size: 216px 26px;
 	display: none;
