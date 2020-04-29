@@ -218,3 +218,6 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 = 1.39 =
 * Updated test image
+
+= 1.40 =
+* Site url now supports folders / paths
