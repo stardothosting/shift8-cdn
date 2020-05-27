@@ -14,3 +14,4 @@ if ( !defined( 'S8CDN_TEST_README_URL' ) )
 
 define( 'S8CDN_API' , 'https://shift8cdn.com');
 define( 'S8CDN_SUFFIX', '.wpcdn.shift8cdn.com');
+define( 'S8CDN_SUFFIX_PAID' , '.cdn.shift8web.com');
