@@ -1,4 +1,10 @@
 <?php
+/**
+ * Shift8 CDN Define rules
+ *
+ * Defined rules used throughout the plugin operations
+ *
+ */
 
 if ( !defined( 'ABSPATH' ) ) {
     die();
@@ -14,4 +20,5 @@ if ( !defined( 'S8CDN_TEST_README_URL' ) )
 
 define( 'S8CDN_API' , 'https://shift8cdn.com');
 define( 'S8CDN_SUFFIX', '.wpcdn.shift8cdn.com');
-define( 'S8CDN_SUFFIX_PAID' , '.cdn.shift8web.com');
+define( 'S8CDN_SUFFIX_PAID', '.cdn.shift8web.com');
+define( 'S8CDN_PAID_CHECK', 'shift8_cdn_check');

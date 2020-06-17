@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.41
+ * Version: 1.42
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -88,13 +88,37 @@ $plugin_name = $plugin_data['TextDomain'];
     </label>
     </td>
     </tr>
+    <tr valign="top">
+    <th scope="row">Shift8 CDN Account Status : </th>
+    <td>
+    <?php
+    if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+        $account_status = "Paid Plan";
+    } else {
+        $account_status = "Free Plan";
+    }
+    ?>
+    <strong><?php echo $account_status; ?></strong>
+    <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+        <span class="shift8-cdn-tooltiptext">Note : If you have upgraded your account and dont see this status change, click the "Check" button to manually synchronize.</span>
+    </div>
+    </td>
+</tr>
 	<tr valign="top">
     <th scope="row">Site URL : </th>
-    <td><input type="text" name="shift8_cdn_url" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))); ?>"> Note : Only enter site, no URI</td>
+    <td><input type="text" name="shift8_cdn_url" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))); ?>">
+    <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+        <span class="shift8-cdn-tooltiptext">Note : Only enter site, no URI : https://www.domain.com . Also make sure the site url matches whats in our dashboard exactly.</span>
+    </div>
+    </td>
 	</tr>
 	<tr valign="top">
     <th scope="row">Shift8 CDN API Key : </th>
-    <td><input type="text" id="shift8_cdn_api_field" name="shift8_cdn_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_api'))) ? '' : esc_attr(get_option('shift8_cdn_api'))); ?>"> <small>Keep this safe!</small></td>
+    <td><input type="text" id="shift8_cdn_api_field" name="shift8_cdn_api" size="34" value="<?php echo (empty(esc_attr(get_option('shift8_cdn_api'))) ? '' : esc_attr(get_option('shift8_cdn_api'))); ?>">
+    <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+        <span class="shift8-cdn-tooltiptext">Keep this safe!</span>
+    </div>
+    </td>
 	</tr>
 	<tr valign="top">
     <th scope="row">Shift8 CDN Prefix : </th>
@@ -105,14 +129,24 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Test URL before enabling : </th>
     <?php
         if (!empty(esc_attr(get_option('shift8_cdn_prefix'))) && !empty(esc_attr(get_option('shift8_cdn_url')))) {
-            $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . '.wpcdn.shift8cdn.com' . 
-                rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
-                '/wp-content/plugins/shift8-cdn/test/test.png';
+            if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+                $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX_PAID . 
+                    rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
+                    '/wp-content/plugins/shift8-cdn/test/test.png';
+            } else {
+                $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX . 
+                    rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
+                    '/wp-content/plugins/shift8-cdn/test/test.png';
+            }
         } else { 
             $shift8_test_url = null;
         }
     ?>
-    <td><a href="<?php echo $shift8_test_url; ?>" target="_new" >Click to open test URL in new tab</a> <br /><small>Note : this will load a test image from the CDN. If it loads correctly then it should be working!</small></td>
+    <td><a href="<?php echo $shift8_test_url; ?>" target="_new" >Click to open test URL in new tab</a>
+    <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+        <span class="shift8-cdn-tooltiptext">Note : this will load a test image from the CDN. If it loads correctly then it should be working!</span>
+    </div>
+    </td>
     </tr>
     <?php } ?>
     <tr valign="top">
@@ -146,7 +180,10 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Purge Cache</th>
     </tr>
     <tr valign="top">
-    <td>    
+    <td>This will submit a purge request across the entire network of endpoints. This can only be done once every few minutes. If you are troubleshooting, it is better to switch the CDN off in the Core Settings tab.</td>
+    </tr>
+    <tr valign="top">
+    <td>
         <div class="shift8-cdn-button-container">
             <a id="shift8-cdn-purge" href="<?php echo wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_push'), 'process'); ?>"><button class="shift8-cdn-button shift8-cdn-button-register">Purge</button></a>
         </div>

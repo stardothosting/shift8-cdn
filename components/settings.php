@@ -1,4 +1,14 @@
 <?php
+/**
+ * Shift8 CDN Settings
+ *
+ * Declaration of plugin settings used throughout
+ *
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+    die();
+}
 
 // create custom plugin settings menu
 add_action('admin_menu', 'shift8_cdn_create_menu');
@@ -30,7 +40,8 @@ function register_shift8_cdn_settings() {
 }
 
 // Uninstall hook
-function handle_shift8_cdn_uninstall_hook() {
+function shift8_cdn_uninstall_hook() {
+  // Delete setting values
   delete_option('shift8_cdn_enabled');
   delete_option('shift8_cdn_url');
   delete_option('shift8_cdn_api');
@@ -38,8 +49,21 @@ function handle_shift8_cdn_uninstall_hook() {
   delete_option('shift8_cdn_css');
   delete_option('shift8_cdn_js');
   delete_option('shift8_cdn_media');
+  // Clear Cron tasks
+  wp_clear_scheduled_hook( 'shift8_cdn_cron_hook' );
+  // Delete transient data
+  delete_transient(S8CDN_PAID_CHECK);
 }
-register_uninstall_hook( S8CDN_FILE, 'handle_shift8_cdn_uninstall_hook' );
+register_uninstall_hook( S8CDN_FILE, 'shift8_cdn_uninstall_hook' );
+
+// Deactivation hook
+function shift8_cdn_deactivation() {
+  // Clear Cron tasks
+  wp_clear_scheduled_hook( 'shift8_cdn_cron_hook' );
+  // Delete transient
+  delete_transient(S8CDN_PAID_CHECK);
+}
+register_deactivation_hook( S8CDN_FILE, 'shift8_cdn_deactivation' );
 
 // Validate Input for Admin options
 function shift8_cdn_url_validate($data){

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Shift8 CDN Main Functions
+ *
+ * Collection of functions used throughout the operation of the plugin
+ *
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+    die();
+}
 
 // Function to encrypt session data
 function shift8_cdn_encrypt($key, $payload) {
@@ -101,6 +111,11 @@ function shift8_cdn_poll($shift8_action) {
             if ($shift8_action == 'check') {
                 update_option('shift8_cdn_api', esc_attr(json_decode($response['body'])->apikey));
                 update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
+                // Manually set the paid check transient
+                $suffix_get = esc_attr(json_decode($response['body'])->user_plan->cdn_suffix);
+                $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX );
+                set_transient(S8CDN_PAID_CHECK, $suffix_set, 0);
+
                 echo json_encode(array(
                 'apikey' => esc_attr(json_decode($response['body'])->apikey),
                 'cdnprefix' => esc_attr(json_decode($response['body'])->cdnprefix),
@@ -151,7 +166,8 @@ function shift8_cdn_prefetch() {
         // Get all options configured as array
         $shift8_options = shift8_cdn_check_options();
         echo '<meta http-equiv="x-dns-prefetch-control" content="on">
-        <link rel="dns-prefetch" href="//' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '" />';
+        <link rel="dns-prefetch" href="//' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '" />
+        <link rel="dns-prefetch" href="//' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID . '" />';
     }
 }
 
@@ -159,7 +175,6 @@ add_action('wp_head', 'shift8_cdn_prefetch', 0);
 
 
 // Functions to produce debugging information
-
 function shift8_cdn_debug_get_php_info() {
     //retrieve php info for current server
     if (!function_exists('ob_start') || !function_exists('phpinfo') || !function_exists('ob_get_contents') || !function_exists('ob_end_clean') || !function_exists('preg_replace')) {
@@ -226,5 +241,55 @@ function shift8_cdn_debug_version_check() {
     echo '<strong>' . __( 'Theme URI: ' ) . '</strong>' . $uri . '<br />';
     echo '<strong>' . __( 'PHP Version: ' ) . '</strong>' . $php . '<br />';
     echo '<strong>' . __( 'Active Plugins: ' ) . '</strong>' . $plugins . '<br />';
+}
 
+// Function to schedule cron polling interval to check if account is paid
+
+// Check user plan options
+add_action( 'shift8_cdn_cron_hook', 'shift8_cdn_check_suffix' );
+function shift8_cdn_check_suffix() {
+    $cdn_url = esc_attr(get_option('shift8_cdn_url'));
+    $cdn_api = esc_attr(get_option('shift8_cdn_api'));
+
+    // Use WP Remote Get to poll the cdn api 
+    $response = wp_remote_get( S8CDN_API . '/api/check',
+        array(
+            'method' => 'POST',
+            'httpversion' => '1.1',
+            'timeout' => '45',
+            'blocking' => true,
+            'body' => array(
+                'url' => $cdn_url,
+                'api' => $cdn_api
+            ),
+        )
+    );
+    // Set transient based on results
+    $suffix_get = esc_attr(json_decode($response['body'])->user_plan->cdn_suffix);
+    $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX );
+    set_transient(S8CDN_PAID_CHECK, $suffix_set, 0);
+}
+add_filter( 'cron_schedules', 'shift8_cdn_add_cron_interval' );
+function shift8_cdn_add_cron_interval( $schedules ) { 
+    $schedules['shift8_cdn_five'] = array(
+        'interval' => 5,
+        'display'  => esc_html__( 'Every Five Seconds' ), );
+    $schedules['shift8_cdn_minute'] = array(
+        'interval' => 60,
+        'display'  => esc_html__( 'Every Sixty Seconds' ), );
+    $schedules['shift8_cdn_halfhour'] = array(
+        'interval' => 1800,
+        'display'  => esc_html__( 'Every 30 minutes' ), );
+    $schedules['shift8_cdn_twohour'] = array(
+        'interval' => 7200,
+        'display'  => esc_html__( 'Every two hours' ), );
+    $schedules['shift8_cdn_fourhour'] = array(
+        'interval' => 14400,
+        'display'  => esc_html__( 'Every four hours' ), );
+    return $schedules;
+}
+
+// Set the cron task on an hourly basis to check the CDN suffix
+if ( ! wp_next_scheduled( 'shift8_cdn_cron_hook' ) ) {
+    wp_schedule_event( time(), 'shift8_cdn_fourhour', 'shift8_cdn_cron_hook' );
 }

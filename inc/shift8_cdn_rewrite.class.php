@@ -1,8 +1,16 @@
 <?php
-
 /**
-Shift8 CDN Rewriter
+ * Shift8 CDN Rewrite Class
+ *
+ * Class used to rewrite assets to go through CDN urls
+ *
  */
+
+if ( !defined( 'ABSPATH' ) ) {
+    die();
+}
+
+
 class Shift8_CDN {
 
 	/**
@@ -50,7 +58,12 @@ class Shift8_CDN {
 				$uri = parse_url($origin);
 				$origin_host = $uri['scheme'] . '://' . $uri['host'];
 				$re = '/' . preg_quote( $origin_host, '/' ) . '(' . preg_quote($uri['path'], '/') . '\/)(.*?\.)(' . $extension_re . ')/i';
-				$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '\1\2\3';
+				// Determine which CDN suffix to use
+				if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID . '\1\2\3';
+				} else {
+					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '\1\2\3';
+				}
 				$content = preg_replace( $re, $subst, $content);
 			}
 
