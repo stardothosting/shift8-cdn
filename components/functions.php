@@ -289,7 +289,11 @@ function shift8_cdn_add_cron_interval( $schedules ) {
     return $schedules;
 }
 
-// Set the cron task on an hourly basis to check the CDN suffix
-if ( ! wp_next_scheduled( 'shift8_cdn_cron_hook' ) ) {
-    wp_schedule_event( time(), 'shift8_cdn_fourhour', 'shift8_cdn_cron_hook' );
+// Set the cron task on an every 4 hour basis to check the CDN suffix
+if (shift8_cdn_check_enabled()) {
+    if ( ! wp_next_scheduled( 'shift8_cdn_cron_hook' ) ) {
+        wp_schedule_event( time(), 'shift8_cdn_fourhour', 'shift8_cdn_cron_hook' );
+    } 
+} else {
+    wp_clear_scheduled_hook( 'shift8_cdn_cron_hook' );
 }
