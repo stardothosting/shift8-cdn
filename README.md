@@ -10,6 +10,10 @@
 
 This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site. What this means is that you can simply install this plugin, activate and register with our CDN service and all of your static assets on your website will be served through our global content delivery network.
 
+## Community Support
+
+If you need support, please head over to our [community discourse forum](https://discourse.shift8cdn.com) for you to more easily access support resources.
+
 ## Check out our new Shift8 CDN website 
 
 You can now create your own dashboard account to add/remove/manage your sites : [Shift8 CDN](https://shift8cdn.com). Note if you have a site created prior to this dashboard, you can submit a request on the su
