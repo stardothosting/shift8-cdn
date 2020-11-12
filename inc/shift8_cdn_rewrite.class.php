@@ -21,6 +21,7 @@ class Shift8_CDN {
 		add_action( 'template_redirect', array( $this, 'template_redirect' ) );
 		add_filter( 'rewrite_urls',      array( $this, 'filter' ) );
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'rewrite_srcset'), PHP_INT_MAX );
+		add_filter( 'script_loader_src', array( $this, 'cdn_script_loader_src' ), 10, 2 );
 
 	}
 
@@ -112,6 +113,26 @@ class Shift8_CDN {
         }
         return $sources;
     }
+
+    /**
+     * Rewrites the emoji js file to go through the CDN
+     * @param string 
+     * @return string
+     */
+	public function cdn_script_loader_src( $source, $scriptname ) {		
+		if ($scriptname == 'concatemoji') {
+			$uri = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
+	        $origin_host = $uri['scheme'] . '://' . $uri['host'];
+	        $shift8_options = shift8_cdn_check_options();
+	        if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID;
+	        } else {
+	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX;
+	        }
+			$source = str_replace($origin_host, $subst, $source);
+		}
+		return $source;
+	}
 }
 
 // Dont do anything unless we're enabled
