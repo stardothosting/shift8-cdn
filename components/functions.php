@@ -128,9 +128,8 @@ function shift8_cdn_poll($shift8_action) {
 
         } else {
             echo 'Error Detected : ';
-            if (is_array($response['response'])) {
-                echo esc_attr(json_decode($response['body'])->error);
-
+            if (is_wp_error($response)) {
+                echo $response->get_error_message();
             } else {
                 echo 'unknown';
             }
