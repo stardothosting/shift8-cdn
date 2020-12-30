@@ -63,10 +63,12 @@ class Shift8_CDN {
 				$re = '/' . preg_quote( $origin_host, '/' ) . '(' . preg_quote($uri['path'], '/') . '\/)(.*?\.)(' . $extension_re . ')/i';
 
 				// Determine which CDN suffix to use
-				if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+				if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
 					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID . '\1\2\3';
-				} else {
+				} else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX){
 					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '\1\2\3';
+				} else {
+					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND . '\1\2\3';
 				}
 				$content = preg_replace( $re, $subst, $content);
 			}
@@ -102,10 +104,12 @@ class Shift8_CDN {
             $uri = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
             $origin_host = $uri['scheme'] . '://' . $uri['host'];
             $shift8_options = shift8_cdn_check_options();
-            if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+            if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
                 $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID;
-            } else {
+            } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
                 $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX;
+            } else {
+                $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND;
             }
             foreach ( $sources as $i => $source ) {
                 $sources[ $i ]['url'] = str_replace( [ $origin_host ], $subst, $source['url'] );
@@ -124,10 +128,12 @@ class Shift8_CDN {
 			$uri = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
 	        $origin_host = $uri['scheme'] . '://' . $uri['host'];
 	        $shift8_options = shift8_cdn_check_options();
-	        if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+	        if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
 	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID;
-	        } else {
+	        } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
 	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX;
+	        } else {
+	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND;
 	        }
 			$source = str_replace($origin_host, $subst, $source);
 		}

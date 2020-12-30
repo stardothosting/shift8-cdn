@@ -103,3 +103,13 @@ function shift8_cdn_check_options() {
   return $shift8_options;
 }
 
+// Check if transient is set
+function shift8_cdn_check_paid_transient() {
+  // If transient is not set
+  if (!get_transient(S8CDN_PAID_CHECK)) return false;
+  if(get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX) return S8CDN_SUFFIX;
+  if(get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_SECOND) return S8CDN_SUFFIX_SECOND;
+  if(get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) return S8CDN_SUFFIX_PAID;
+
+  return false;
+}

@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.45
+ * Version: 1.46
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -92,7 +92,7 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Shift8 CDN Account Status : </th>
     <td>
     <?php
-    if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+    if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
         $account_status = "Paid Plan";
     } else {
         $account_status = "Free Plan";
@@ -129,12 +129,16 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Test URL before enabling : </th>
     <?php
         if (!empty(esc_attr(get_option('shift8_cdn_prefix'))) && !empty(esc_attr(get_option('shift8_cdn_url')))) {
-            if (get_transient(S8CDN_PAID_CHECK) && get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) {
+            if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
                 $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX_PAID . 
                     rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
                     '/wp-content/plugins/shift8-cdn/test/test.png';
-            } else {
+            } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
                 $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX . 
+                    rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
+                    '/wp-content/plugins/shift8-cdn/test/test.png';
+            } else {
+                $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX_SECOND . 
                     rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
                     '/wp-content/plugins/shift8-cdn/test/test.png';
             }

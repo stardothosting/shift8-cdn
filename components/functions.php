@@ -113,7 +113,7 @@ function shift8_cdn_poll($shift8_action) {
                 update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
                 // Manually set the paid check transient
                 $suffix_get = esc_attr(json_decode($response['body'])->user_plan->cdn_suffix);
-                $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX );
+                $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX_SECOND );
                 set_transient(S8CDN_PAID_CHECK, $suffix_set, 0);
 
                 echo json_encode(array(
@@ -148,10 +148,10 @@ function shift8_cdn_rewrites( $rewrites ) {
                 home_url( 'wp-content' ),
                 home_url( 'wp-includes' ),
             );
-
+            
             foreach( $urls as $in => $out ) {
                 $url = parse_url($urls[$in]);
-                $rewrites[$out] = str_replace( $shift8_site_url['scheme'] . '://' . $shift8_site_url['host'], 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX, $urls[$in] );
+                $rewrites[$out] = str_replace( $shift8_site_url['scheme'] . '://' . $shift8_site_url['host'], 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND, $urls[$in] );
             }
             return $rewrites;
         }
@@ -166,6 +166,7 @@ function shift8_cdn_prefetch() {
         $shift8_options = shift8_cdn_check_options();
         echo '<meta http-equiv="x-dns-prefetch-control" content="on">
         <link rel="dns-prefetch" href="//' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '" />
+        <link rel="dns-prefetch" href="//' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND . '" />
         <link rel="dns-prefetch" href="//' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID . '" />';
     }
 }
@@ -265,7 +266,7 @@ function shift8_cdn_check_suffix() {
     );
     // Set transient based on results
     $suffix_get = esc_attr(json_decode($response['body'])->user_plan->cdn_suffix);
-    $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX );
+    $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX_SECOND );
     set_transient(S8CDN_PAID_CHECK, $suffix_set, 0);
 }
 add_filter( 'cron_schedules', 'shift8_cdn_add_cron_interval' );
