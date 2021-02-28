@@ -139,6 +139,66 @@ class Shift8_CDN {
 		}
 		return $source;
 	}
+
+	/**
+	 * Checks if the provided URL should be allowed to be rewritten with the CDN URL
+	 * @param string $url URL to check.
+	 * @return boolean
+	 */
+	public function is_excluded( $url ) {
+		$path = wp_parse_url( $url, PHP_URL_PATH );
+
+		$excluded_extensions = [
+			'php',
+			'html',
+			'htm',
+		];
+
+		if ( in_array( pathinfo( $path, PATHINFO_EXTENSION ), $excluded_extensions, true ) ) {
+			return true;
+		}
+
+		if ( ! $path ) {
+			return true;
+		}
+
+		if ( '/' === $path ) {
+			return true;
+		}
+
+		if ( preg_match( '#^(' . $this->get_excluded_files( '#' ) . ')$#', $path ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get all files we dont want to be passed through the CDN
+	 * @param string $delimiter RegEx delimiter.
+	 * @return string A pipe-separated list of excluded files.
+	 */
+	private function get_excluded_files( $delimiter ) {
+		$files = $this->options->get( 'cdn_reject_files', [] );
+
+		$files = (array) apply_filters( 'shift8_cdn_reject_files', $files );
+		$files = array_filter( $files );
+
+		if ( ! $files ) {
+			return '';
+		}
+
+		$files = array_flip( array_flip( $files ) );
+		$files = array_map(
+			function ( $file ) use ( $delimiter ) {
+				return str_replace( $delimiter, '\\' . $delimiter, $file );
+			},
+			$files
+		);
+
+		return implode( '|', $files );
+	}
+
 }
 
 // Dont do anything unless we're enabled

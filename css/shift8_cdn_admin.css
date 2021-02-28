@@ -54,6 +54,11 @@
 .shift8-cdn-table input {
     width:50%;
 }
+
+.shift8-cdn-table .textarea {
+    white-space: pre-wrap;
+}
+
 .shift8-cdn-response {
 	display:block;
 	text-align:center;

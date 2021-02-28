@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.46
+ * Version: 1.47
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -14,6 +14,7 @@ require_once(plugin_dir_path(__FILE__).'components/enqueuing.php' );
 require_once(plugin_dir_path(__FILE__).'components/settings.php' );
 require_once(plugin_dir_path(__FILE__).'components/functions.php' );
 require_once(plugin_dir_path(__FILE__).'inc/shift8_cdn_rewrite.class.php' );
+require_once(plugin_dir_path(__FILE__).'components/wp-cli.php' );
 
 // Admin welcome page
 if (!function_exists('shift8_main_page')) {
@@ -219,6 +220,15 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Enable CDN for Media files : </th>
     <td><input type="checkbox" name="shift8_cdn_media" size="34" <?php echo (empty(esc_attr(get_option('shift8_cdn_media'))) ? '' : 'checked'); ?>></td>
     </tr>
+    <tr valign="top">
+    <th scope="row">Exclude files from CDN</th>
+    </tr>
+    <tr valign="top">
+    <th scope="row">Specify URL(s) of files that should not get served via CDN (one per line) : </th>
+    </tr>
+    <td>
+    <textarea id="shift8-cdn-reject-files" rows="10" cols="100" name="shift8_cdn_reject_files" placeholder="wp-content/uploads/file.jpg\nsome/path/file(.*)"><?php echo esc_textarea(get_option('shift8_cdn_reject_files')); ?></textarea>
+    </td>
     </tbody>
     <!-- SUPPORT TAB -->
     <tbody class="<?php echo $active_tab == 'support_options' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">

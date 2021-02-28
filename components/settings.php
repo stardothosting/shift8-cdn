@@ -32,6 +32,8 @@ function register_shift8_cdn_settings() {
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_css', array( 'default' => 'on' ) );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_js', array( 'default' => 'on' ) );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_media', array( 'default' => 'on' ));
+    //register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_reject_files', 'shift8_cdn_sanitize_reject_field' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_reject_files' );
 
     // Cleanup of old settings no longer needed
     if (get_option('shift8_cdn_email')) {
@@ -49,6 +51,8 @@ function shift8_cdn_uninstall_hook() {
   delete_option('shift8_cdn_css');
   delete_option('shift8_cdn_js');
   delete_option('shift8_cdn_media');
+  delete_option('shift8_cdn_reject_files');
+
   // Clear Cron tasks
   wp_clear_scheduled_hook( 'shift8_cdn_cron_hook' );
   // Delete transient data
@@ -112,4 +116,90 @@ function shift8_cdn_check_paid_transient() {
   if(get_transient(S8CDN_PAID_CHECK) === S8CDN_SUFFIX_PAID) return S8CDN_SUFFIX_PAID;
 
   return false;
+}
+
+// Sanitize settings meant for text areas
+function shift8_cdn_sanitize_reject_field( $data ) {
+
+  $sanitized_values = null;
+
+  if ( ! is_array( $data ) ) {
+    $values = explode( "\n", $data );
+  }
+
+  $values = array_map( 'trim', $values );
+  $values = array_filter( $values );
+
+  if ( ! $values ) {
+    return [];
+  }
+
+  // Sanitize.
+  foreach ( $values as $value ) {
+    // Get relative URL
+    $value = wp_parse_url( $value, PHP_URL_PATH );
+    // Clean wildcards
+    $path_components = explode( '/', $value );
+    $wildcard_arr = [
+      '.*'   => '(.*)',
+      '*'    => '(.*)',
+      '(*)'  => '(.*)',
+      '(.*)' => '(.*)',
+    ];
+
+    foreach ( $path_components as &$path_component ) {
+      $path_component = strtr( $path_component, $wildcard_arr );
+    }
+    $value = implode( '/', $path_components );
+
+    // Finally add each sanitized value to new array
+    $sanitized_values[] = $value;
+  }
+  //return $sanitized_values;
+  return $data;
+}
+
+// Sanitize settings meant for text areas
+function shift8_cdn_sanitize_reject_field_display( $data ) {
+
+  $sanitized_values = null;
+
+  if (! $data ) {
+    return null;
+  }
+
+  if ( !is_array( $data ) ) {
+    return null;
+  }
+
+  $values = array_map( 'trim', $data );
+  $values = array_filter( $values );
+
+  if ( ! $values ) {
+    return null;
+  }
+
+  // Sanitize.
+  foreach ( $values as $value ) {
+    // Get relative URL
+    //$value = wp_parse_url( $value, PHP_URL_PATH );
+    // Clean wildcards
+    $path_components = explode( '/', $value );
+    $wildcard_arr = [
+      '.*'   => '(.*)',
+      '*'    => '(.*)',
+      '(*)'  => '(.*)',
+      '(.*)' => '(.*)',
+    ];
+
+    foreach ( $path_components as &$path_component ) {
+      $path_component = strtr( $path_component, $wildcard_arr );
+    }
+    $value = implode( '/', $path_components );
+
+    // Finally add each sanitized value to new array
+    $sanitized_values[] = $value;
+  }
+  //return implode("\n", $sanitized_values);
+  return $data;
 }
