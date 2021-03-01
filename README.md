@@ -4,7 +4,7 @@
 * Tags: cdn, free cdn, speed, performance, wordpress cache, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 5.6
-* Stable tag: 1.47
+* Stable tag: 1.48
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -249,3 +249,6 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 ### 1.47
 * Added WP-CLI command to enable/disable CDN
+
+### 1.48
+* Resolved issue with missing file
