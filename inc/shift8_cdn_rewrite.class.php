@@ -14,6 +14,14 @@ if ( !defined( 'ABSPATH' ) ) {
 class Shift8_CDN {
 
 	/**
+	 * Options instance
+	 *
+	 * @var Options_Data
+	 */
+	private $shift8_options;
+	private $shift8_subst;
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
@@ -22,6 +30,16 @@ class Shift8_CDN {
 		add_filter( 'rewrite_urls',      array( $this, 'filter' ) );
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'rewrite_srcset'), PHP_INT_MAX );
 		add_filter( 'script_loader_src', array( $this, 'cdn_script_loader_src' ), 10, 2 );
+		$this->shift8_options = shift8_cdn_check_options();
+
+		// Determine which CDN suffix to use
+		if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
+			$this->shift8_subst = 'https://' . $this->shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID;
+		} else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX){
+			$this->shift8_subst = 'https://' . $this->shift8_options['cdn_prefix'] . S8CDN_SUFFIX;
+		} else {
+			$this->shift8_subst = 'https://' . $this->shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND;
+		}
 
 	}
 
@@ -36,46 +54,34 @@ class Shift8_CDN {
 
 		// This is a critical point at which you must add rules for rewriting URL's
 		$rewrites = apply_filters( 'shift8_cdn_rewrites', array() );
-		$shift8_options = shift8_cdn_check_options();
+		return $this->rewrite($content);
+	}
 
-		$extensions = array();
-		$extension_re = null;
+	/**
+	 * Search & Replace URLs with the CDN URLs in the provided content
+	 * @param string $html HTML content.
+	 * @return string
+	 */
+	public function rewrite( $html ) {
+		$base_url = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
+		$pattern_url = $base_url['scheme'] . '://' . $base_url['host'];
+		$pattern = '#[("\']\s*(?<url>(?:(?:https?:|)' . preg_quote( $pattern_url, '#' ) . ')\/(?:(?:(?:' . $this->get_allowed_paths() . ')[^"\',)]+))|\/[^/](?:[^"\')\s>]+\.[[:alnum:]]+))\s*["\')]#i';
 
-		// Build regex extensions
-		if($shift8_options['static_css'] === 'on') $extensions[] = 'css';
-		if($shift8_options['static_js'] === 'on') $extensions[] = 'js';
-		if($shift8_options['static_media'] === 'on') $extensions[] = 'jpg|jpeg|png|gif|bmp|pdf|mp3|m4a|ogg|wav|mp4|m4v|mov|wmv|avi|mpg|ogv|3gp|3g2|webp|svg';
-
-
-		// Only apply the regex if at least one static file type option is selected
-		if (!empty($extensions)) {
-			foreach ($extensions as $extension) {
-				if ($extension === end($extensions)) {
-					$extension_re .= $extension;
-				} else {
-					$extension_re .= $extension . '|';
-				}
-			}
-			// Loop through each rule and process it using regex to pattern match static files
-			foreach( $rewrites as $origin => $destination ) {
-				$uri = parse_url($origin);
+		return preg_replace_callback(
+			$pattern,
+			function( $matches ) {
+				$uri = parse_url($matches['url']);
 				$origin_host = $uri['scheme'] . '://' . $uri['host'];
-				$re = '/' . preg_quote( $origin_host, '/' ) . '(' . preg_quote($uri['path'], '/') . '\/)(.*?\.)(' . $extension_re . ')/i';
+				$re = '/' . preg_quote( $origin_host, '/' ) . '(' . preg_quote($uri['path'], '/') . '\/)(.*?\.)/i';
 
-				// Determine which CDN suffix to use
-				if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
-					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID . '\1\2\3';
-				} else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX){
-					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX . '\1\2\3';
+				if (!$this->is_excluded( $matches[0] )) {
+					return preg_replace( $re, $matches['url'], $this->shift8_subst . $uri['path']);
 				} else {
-					$subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND . '\1\2\3';
+					return $matches['url'];									
 				}
-				$content = preg_replace( $re, $subst, $content);
-			}
-
-		}
-
-		return $content;
+			},
+			$html
+		);
 	}
 
 	/*
@@ -103,16 +109,9 @@ class Shift8_CDN {
         if ( (bool) $sources ) {
             $uri = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
             $origin_host = $uri['scheme'] . '://' . $uri['host'];
-            $shift8_options = shift8_cdn_check_options();
-            if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
-                $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID;
-            } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
-                $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX;
-            } else {
-                $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND;
-            }
+
             foreach ( $sources as $i => $source ) {
-                $sources[ $i ]['url'] = str_replace( [ $origin_host ], $subst, $source['url'] );
+                $sources[ $i ]['url'] = str_replace( [ $origin_host ], $this->shift8_subst, $source['url'] );
             }
         }
         return $sources;
@@ -127,15 +126,8 @@ class Shift8_CDN {
 		if ($scriptname == 'concatemoji') {
 			$uri = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
 	        $origin_host = $uri['scheme'] . '://' . $uri['host'];
-	        $shift8_options = shift8_cdn_check_options();
-	        if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
-	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_PAID;
-	        } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
-	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX;
-	        } else {
-	            $subst = 'https://' . $shift8_options['cdn_prefix'] . S8CDN_SUFFIX_SECOND;
-	        }
-			$source = str_replace($origin_host, $subst, $source);
+
+			$source = str_replace($origin_host, $this->shift8_subst, $source);
 		}
 		return $source;
 	}
@@ -148,13 +140,21 @@ class Shift8_CDN {
 	public function is_excluded( $url ) {
 		$path = wp_parse_url( $url, PHP_URL_PATH );
 
-		$excluded_extensions = [
-			'php',
-			'html',
-			'htm',
-		];
+		// Match specified excludes first
+		if ( !empty($this->get_excluded_files( '#' )) && preg_match( '#^((.*)' . $this->get_excluded_files( '#' ) . ')$#', $path ) ) {
+			return true;
+		}
 
-		if ( in_array( pathinfo( $path, PATHINFO_EXTENSION ), $excluded_extensions, true ) ) {
+		// Build regex extensions
+		$excluded_extensions = array();
+		if($this->shift8_options['static_css'] !== 'on') $excluded_extensions[] = 'css';
+		if($this->shift8_options['static_js'] !== 'on') $excluded_extensions[] = 'js';
+		if($this->shift8_options['static_media'] !== 'on') {
+			$excluded_extensions[] = explode('|','jpg|jpeg|png|gif|bmp|pdf|mp3|m4a|ogg|wav|mp4|m4v|mov|wmv|avi|mpg|ogv|3gp|3g2|webp|svg');
+			$excluded_extensions = $this->flatten_array($excluded_extensions);
+		}
+
+		if ( !empty($excluded_extensions) && in_array( pathinfo( $path, PATHINFO_EXTENSION ), $excluded_extensions, true ) ) {
 			return true;
 		}
 
@@ -163,10 +163,6 @@ class Shift8_CDN {
 		}
 
 		if ( '/' === $path ) {
-			return true;
-		}
-
-		if ( preg_match( '#^(' . $this->get_excluded_files( '#' ) . ')$#', $path ) ) {
 			return true;
 		}
 
@@ -179,8 +175,7 @@ class Shift8_CDN {
 	 * @return string A pipe-separated list of excluded files.
 	 */
 	private function get_excluded_files( $delimiter ) {
-		$files = $this->options->get( 'cdn_reject_files', [] );
-
+		$files = esc_textarea(get_option('shift8_cdn_reject_files'));
 		$files = (array) apply_filters( 'shift8_cdn_reject_files', $files );
 		$files = array_filter( $files );
 
@@ -199,6 +194,35 @@ class Shift8_CDN {
 		return implode( '|', $files );
 	}
 
+	/**
+	 * Flatten multidimensional array
+	 * @param multidimensional array
+	 * @return flattened one dimensional array
+	 */
+	function flatten_array(array $array) {
+	    $flattened_array = array();
+	    array_walk_recursive($array, function($a) use (&$flattened_array) { $flattened_array[] = $a; });
+	    return $flattened_array;
+	}
+
+	/**
+	 * Gets the allowed paths as a regex pattern for the CDN rewrite
+	 *
+	 * @return string
+	 */
+	private function get_allowed_paths() {
+		$wp_content_dirname  = ltrim( trailingslashit( wp_parse_url( content_url(), PHP_URL_PATH ) ), '/' );
+		$wp_includes_dirname = ltrim( trailingslashit( wp_parse_url( includes_url(), PHP_URL_PATH ) ), '/' );
+
+		$upload_dirname = '';
+		$uploads_info   = wp_upload_dir();
+
+		if ( ! empty( $uploads_info['baseurl'] ) ) {
+			$upload_dirname = '|' . ltrim( trailingslashit( wp_parse_url( $uploads_info['baseurl'], PHP_URL_PATH ) ), '/' );
+		}
+
+		return $wp_content_dirname . $upload_dirname . '|' . $wp_includes_dirname;
+	}
 }
 
 // Dont do anything unless we're enabled
