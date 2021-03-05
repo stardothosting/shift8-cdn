@@ -3,7 +3,9 @@ jQuery(document).ready(function() {
     // Set placeholder of textare for reject / ignore files
     
     var textArea = document.getElementById('shift8-cdn-reject-files');
-    textArea.placeholder = textArea.placeholder.replace(/\\n/g, '\n');
+    if (textArea) {
+        textArea.placeholder = textArea.placeholder.replace(/\\n/g, '\n');
+    }
 
 
     // Check & synchronize config of CDN account
