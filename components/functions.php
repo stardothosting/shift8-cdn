@@ -68,7 +68,6 @@ function shift8_cdn_poll($shift8_action) {
         // Set headers for WP Remote post
         $headers = array(
             'Content-type: application/json',
-            //'Authorization' => 'Basic ' . base64_encode($cdn_user . ':' . $cdn_api),
         );
 
         // Check values with dashboard
