@@ -96,8 +96,6 @@ class WDS_CLI {
  * @since  1.47
  * @author Shift8 Web
  */
-function shift8_cdn_cli_register_commands() {
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	WP_CLI::add_command( 'shift8cdn', 'WDS_CLI' );
 }
-
-add_action( 'cli_init', 'shift8_cdn_cli_register_commands' );
