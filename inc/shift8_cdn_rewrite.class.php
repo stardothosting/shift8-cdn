@@ -71,13 +71,10 @@ class Shift8_CDN {
 			$pattern,
 			function( $matches ) {
 				$uri = parse_url($matches['url']);
-				$origin_host = $uri['scheme'] . '://' . $uri['host'];
-				$re = '/' . preg_quote( $origin_host, '/' ) . '(' . preg_quote($uri['path'], '/') . '\/)(.*?\.)/i';
-
-				if (!$this->is_excluded( $matches[0] )) {
-					return preg_replace( $re, $matches['url'], $this->shift8_subst . $uri['path']);
+				if (!$this->is_excluded( $matches['url'] )) {
+					return str_replace($matches['url'], $this->shift8_subst . $uri['path'], $matches[0]);
 				} else {
-					return $matches['url'];									
+					return $matches[0];									
 				}
 			},
 			$html
