@@ -71,8 +71,9 @@ class Shift8_CDN {
 			$pattern,
 			function( $matches ) {
 				$uri = parse_url($matches['url']);
+				$query_string = (parse_url($matches['url'], PHP_URL_QUERY) ? '?' . parse_url($matches['url'], PHP_URL_QUERY) : null);
 				if (!$this->is_excluded( $matches['url'] )) {
-					return str_replace($matches['url'], $this->shift8_subst . $uri['path'], $matches[0]);
+					return str_replace($matches['url'], $this->shift8_subst . $uri['path'] . $query_string, $matches[0]);
 				} else {
 					return $matches[0];									
 				}
