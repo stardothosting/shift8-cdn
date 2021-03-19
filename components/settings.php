@@ -10,12 +10,25 @@ if ( !defined( 'ABSPATH' ) ) {
     die();
 }
 
+add_action('admin_head', 'shift8_cdn_custom_favicon');
+function shift8_cdn_custom_favicon() {
+  echo '
+    <style>
+    .dashicons-shift8 {
+        background-image: url("'. plugin_dir_url(dirname(__FILE__)) .'/img/shift8pluginicon.png");
+        background-repeat: no-repeat;
+        background-position: center; 
+    }
+    </style>
+  '; 
+}
+
 // create custom plugin settings menu
 add_action('admin_menu', 'shift8_cdn_create_menu');
 function shift8_cdn_create_menu() {
         //create new top-level menu
         if ( empty ( $GLOBALS['admin_page_hooks']['shift8-settings'] ) ) {
-                add_menu_page('Shift8 Settings', 'Shift8', 'administrator', 'shift8-settings', 'shift8_main_page' , 'dashicons-building' );
+                add_menu_page('Shift8 Settings', 'Shift8', 'administrator', 'shift8-settings', 'shift8_main_page' , 'dashicons-shift8' );
         }
         add_submenu_page('shift8-settings', 'CDN Settings', 'CDN Settings', 'manage_options', __FILE__.'/custom', 'shift8_cdn_settings_page');
         //call register settings function
