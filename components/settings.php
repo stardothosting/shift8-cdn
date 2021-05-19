@@ -84,7 +84,7 @@ register_deactivation_hook( S8CDN_FILE, 'shift8_cdn_deactivation' );
 
 // Validate Input for Admin options
 function shift8_cdn_url_validate($data){
-	if(filter_var($data, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
+	if(filter_var($data, FILTER_VALIDATE_URL)) {
       $site_url = parse_url($data);
       return $site_url["scheme"] . '://' . $site_url["host"] . $site_url["path"];
    	} else {
