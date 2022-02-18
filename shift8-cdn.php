@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.58
+ * Version: 1.59
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -130,17 +130,21 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Test URL before enabling : </th>
     <?php
         if (!empty(esc_attr(get_option('shift8_cdn_prefix'))) && !empty(esc_attr(get_option('shift8_cdn_url')))) {
+
+            // Parse url properly to catch if path exists or not
+            $shift8_test_path = (array_key_exists('path', wp_parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))) ? rtrim(wp_parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') : null );
+
             if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
                 $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX_PAID . 
-                    rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
+                    $shift8_test_path . 
                     '/wp-content/plugins/shift8-cdn/test/test.png';
             } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
                 $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX . 
-                    rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
+                    $shift8_test_path . 
                     '/wp-content/plugins/shift8-cdn/test/test.png';
             } else {
                 $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX_SECOND . 
-                    rtrim(parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') . 
+                    $shift8_test_path . 
                     '/wp-content/plugins/shift8-cdn/test/test.png';
             }
         } else { 

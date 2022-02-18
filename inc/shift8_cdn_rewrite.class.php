@@ -63,15 +63,15 @@ class Shift8_CDN {
 	 * @return string
 	 */
 	public function rewrite( $html ) {
-		$base_url = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
+		$base_url = wp_parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
 		$pattern_url = $base_url['scheme'] . '://' . $base_url['host'];
 		$pattern = '#[("\']\s*(?<url>(?:(?:https?:|)' . preg_quote( $pattern_url, '#' ) . ')\/(?:(?:(?:' . $this->get_allowed_paths() . ')[^"\',)]+))|\/[^/](?:[^"\')\s>]+\.[[:alnum:]]+))\s*["\')]#i';
 
 		return preg_replace_callback(
 			$pattern,
 			function( $matches ) {
-				$uri = parse_url($matches['url']);
-				$query_string = (parse_url($matches['url'], PHP_URL_QUERY) ? '?' . parse_url($matches['url'], PHP_URL_QUERY) : null);
+				$uri = wp_parse_url($matches['url']);
+				$query_string = (wp_parse_url($matches['url'], PHP_URL_QUERY) ? '?' . parse_url($matches['url'], PHP_URL_QUERY) : null);
 				if (!$this->is_excluded( $matches['url'] )) {
 					return str_replace($matches['url'], $this->shift8_subst . $uri['path'] . $query_string, $matches[0]);
 				} else {
@@ -105,7 +105,7 @@ class Shift8_CDN {
 	 */
     function rewrite_srcset( $sources ) {
         if ( (bool) $sources ) {
-            $uri = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
+            $uri = wp_parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
             $origin_host = $uri['scheme'] . '://' . $uri['host'];
 
             foreach ( $sources as $i => $source ) {
@@ -122,7 +122,7 @@ class Shift8_CDN {
      */
 	public function cdn_script_loader_src( $source, $scriptname ) {		
 		if ($scriptname == 'concatemoji') {
-			$uri = parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
+			$uri = wp_parse_url((empty(esc_attr(get_option('shift8_cdn_url'))) ? get_site_url() : esc_attr(get_option('shift8_cdn_url'))));
 	        $origin_host = $uri['scheme'] . '://' . $uri['host'];
 
 			$source = str_replace($origin_host, $this->shift8_subst, $source);
