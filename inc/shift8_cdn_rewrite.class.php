@@ -109,7 +109,9 @@ class Shift8_CDN {
             $origin_host = $uri['scheme'] . '://' . $uri['host'];
 
             foreach ( $sources as $i => $source ) {
-                $sources[ $i ]['url'] = str_replace( [ $origin_host ], $this->shift8_subst, $source['url'] );
+            	if (!$this->is_excluded( $sources[ $i ]['url'] )) {
+                	$sources[ $i ]['url'] = str_replace( [ $origin_host ], $this->shift8_subst, $source['url'] );
+                }
             }
         }
         return $sources;
@@ -138,8 +140,8 @@ class Shift8_CDN {
 	public function is_excluded( $url ) {
 		$path = wp_parse_url( $url, PHP_URL_PATH );
 
-		// Match specified excludes first
-		if ( !empty($this->get_excluded_files( '#' )) && preg_match( '#^((.*)' . $this->get_excluded_files( '#' ) . ')$#', $path ) ) {
+		// Cycle through the array of strings to find matching urls
+    	if ( $this->matchURL($this->get_excluded_files( '#' ), $path) ) {
 			return true;
 		}
 
@@ -168,13 +170,34 @@ class Shift8_CDN {
 	}
 
 	/**
+	 * Search an array of strings and match a url pattern
+	 * @param array strings, string urlPattern
+	 * @return boolean
+	 */
+	public function matchURL($strings, $urlPattern) {
+	    // Replace a custom placeholder with a regex wildcard
+	    $escapedStrings = array_map(
+	        function ($string) use ($escapedUrlPath) {
+	            return str_replace('\*', '.*', preg_quote($string, '#'));
+	        },
+	        $strings
+	    );
+
+	    // Create the pattern for matching
+	    $pattern = '#' . implode('|', $escapedStrings) . '#';
+
+	    // Check for a match using preg_match
+	    return (bool) preg_match($pattern, $urlPattern);
+	}
+
+	/**
 	 * Get all files we dont want to be passed through the CDN
 	 * @param string $delimiter RegEx delimiter.
 	 * @return string A pipe-separated list of excluded files.
 	 */
 	private function get_excluded_files( $delimiter ) {
 		$files = esc_textarea(get_option('shift8_cdn_reject_files'));
-		$files = (array) apply_filters( 'shift8_cdn_reject_files', $files );
+		$files = explode("\n", $files);
 		$files = array_filter( $files );
 
 		if ( ! $files ) {
@@ -189,7 +212,7 @@ class Shift8_CDN {
 			$files
 		);
 
-		return implode( '|', $files );
+		return array_map('trim', $files);
 	}
 
 	/**

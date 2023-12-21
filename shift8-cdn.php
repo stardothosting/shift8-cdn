@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.65
+ * Version: 1.66
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -228,7 +228,7 @@ $plugin_name = $plugin_data['TextDomain'];
     <th scope="row">Exclude files from CDN</th>
     </tr>
     <tr valign="top">
-    <th scope="row">Specify URL(s) of files that should not get served via CDN (one per line) : </th>
+    <th scope="row">Specify URL(s) of files that should not get served via CDN (one per line) : <br /><span class="shift8-cdn-help">Note : You can use an asterisk as a wildcard for example: /wp-content/uploads/2023/12/long-filename-2023-12-20-14-04-13*</span></th>
     </tr>
     <td>
     <textarea id="shift8-cdn-reject-files" rows="10" cols="100" name="shift8_cdn_reject_files" placeholder="wp-content/uploads/file.jpg\nsome/path/file(.*)"><?php echo esc_textarea(get_option('shift8_cdn_reject_files')); ?></textarea>

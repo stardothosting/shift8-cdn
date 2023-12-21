@@ -4,7 +4,7 @@
 * Tags: cdn, free cdn, speed, performance, wordpress cache, content delivery network, free, free content delivery, free content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 6.3
-* Stable tag: 1.65
+* Stable tag: 1.70
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -302,3 +302,6 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 = 1.65 =
 * Wordpress 6.3 compatibility
+
+= 1.66 =
+* Fix bug with exclude URLs
