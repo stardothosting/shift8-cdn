@@ -141,7 +141,7 @@ class Shift8_CDN {
 		$path = wp_parse_url( $url, PHP_URL_PATH );
 
 		// Cycle through the array of strings to find matching urls
-    	if ( $this->matchURL($this->get_excluded_files( '#' ), $path) ) {
+    	if ( count($this->get_excluded_files( '#' )) > 0 && $this->matchURL($this->get_excluded_files( '#' ), $path) ) {
 			return true;
 		}
 
@@ -177,7 +177,7 @@ class Shift8_CDN {
 	public function matchURL($strings, $urlPattern) {
 	    // Replace a custom placeholder with a regex wildcard
 	    $escapedStrings = array_map(
-	        function ($string) use ($escapedUrlPath) {
+	        function ($string) use ($urlPattern) {
 	            return str_replace('\*', '.*', preg_quote($string, '#'));
 	        },
 	        (array)$strings
