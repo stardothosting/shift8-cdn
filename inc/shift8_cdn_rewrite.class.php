@@ -180,7 +180,7 @@ class Shift8_CDN {
 	        function ($string) use ($escapedUrlPath) {
 	            return str_replace('\*', '.*', preg_quote($string, '#'));
 	        },
-	        $strings
+	        (array)$strings
 	    );
 
 	    // Create the pattern for matching
@@ -197,11 +197,12 @@ class Shift8_CDN {
 	 */
 	private function get_excluded_files( $delimiter ) {
 		$files = esc_textarea(get_option('shift8_cdn_reject_files'));
+		//$files = (array) apply_filters( 'shift8_cdn_reject_files', $files );
 		$files = explode("\n", $files);
 		$files = array_filter( $files );
 
 		if ( ! $files ) {
-			return '';
+			return [];
 		}
 
 		$files = array_flip( array_flip( $files ) );
