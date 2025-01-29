@@ -1,10 +1,10 @@
 === Shift8 CDN ===
 * Contributors: shift8
 * Donate link: https://www.shift8web.ca
-* Tags: cdn, free cdn, speed, performance, wordpress cache, content delivery network, free, free content delivery, free content delivery network
+* Tags: cdn, free cdn, speed, performance, content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 6.7
-* Stable tag: 1.69
+* Stable tag: 1.70
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -314,3 +314,6 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 
 = 1.69 =
 * Wordpress 6.7 compatibility
+
+= 1.70 =
+* Bug fixes
