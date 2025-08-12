@@ -4,7 +4,7 @@
 * Tags: cdn, free cdn, speed, performance, content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 6.7
-* Stable tag: 1.70
+* Stable tag: 1.71
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
