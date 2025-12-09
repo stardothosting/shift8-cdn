@@ -34,20 +34,24 @@ function shift8_cdn_decrypt($key, $garble) {
 // Handle the ajax trigger
 add_action( 'wp_ajax_shift8_cdn_push', 'shift8_cdn_push' );
 function shift8_cdn_push() {
+    // Sanitize input
+    $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
+    $type = isset($_GET['type']) ? sanitize_text_field(wp_unslash($_GET['type'])) : '';
+    
     // Register
-    if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'register') {
+    if ( wp_verify_nonce($nonce, 'process') && $type == 'register') {
         shift8_cdn_poll('register');
         die();
     // Check
-    } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'check') {
+    } else if ( wp_verify_nonce($nonce, 'process') && $type == 'check') {
         shift8_cdn_poll('check');
         die();
     // Delete
-    } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'delete') {
+    } else if ( wp_verify_nonce($nonce, 'process') && $type == 'delete') {
         shift8_cdn_poll('delete');
         die();
     // Purge
-    } else if ( wp_verify_nonce($_GET['_wpnonce'], 'process') && $_GET['type'] == 'purge') {
+    } else if ( wp_verify_nonce($nonce, 'process') && $type == 'purge') {
         shift8_cdn_poll('purge');
         die();
     } else {
@@ -105,24 +109,43 @@ function shift8_cdn_poll($shift8_action) {
         }
 
         // Deal with the response
-        if (is_array($response) && $response['response']['code'] == '200' && !json_decode($response['body'])->error) {
+        if (is_array($response) && $response['response']['code'] == '200') {
+            $response_data = json_decode($response['body']);
+            
+            // Validate response data exists
+            if (!$response_data || (isset($response_data->error) && $response_data->error)) {
+                echo 'Error: Invalid response from CDN API';
+                return;
+            }
+            
             // Populate options from response if its a check
             if ($shift8_action == 'check') {
-                update_option('shift8_cdn_api', esc_attr(json_decode($response['body'])->apikey));
-                update_option('shift8_cdn_prefix', esc_attr(json_decode($response['body'])->cdnprefix));
-                // Manually set the paid check transient
-                $suffix_get = esc_attr(json_decode($response['body'])->user_plan->cdn_suffix);
-                $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX_SECOND );
-                set_transient(S8CDN_PAID_CHECK, $suffix_set, 0);
+                if (isset($response_data->apikey) && isset($response_data->cdnprefix)) {
+                    update_option('shift8_cdn_api', sanitize_text_field($response_data->apikey));
+                    update_option('shift8_cdn_prefix', sanitize_text_field($response_data->cdnprefix));
+                    
+                    // Manually set the paid check transient
+                    $suffix_get = isset($response_data->user_plan->cdn_suffix) ? sanitize_text_field($response_data->user_plan->cdn_suffix) : '';
+                    $suffix_set = (!empty($suffix_get) && $suffix_get !== "" ? $suffix_get : S8CDN_SUFFIX_SECOND );
+                    set_transient(S8CDN_PAID_CHECK, $suffix_set, 0);
 
-                echo json_encode(array(
-                'apikey' => esc_attr(json_decode($response['body'])->apikey),
-                'cdnprefix' => esc_attr(json_decode($response['body'])->cdnprefix),
-                ));
+                    echo json_encode(array(
+                        'apikey' => esc_attr($response_data->apikey),
+                        'cdnprefix' => esc_attr($response_data->cdnprefix),
+                    ));
+                } else {
+                    echo 'Error: Missing required fields in API response';
+                }
             } else if ($shift8_action == 'purge') {
-                echo json_encode(array(
-                    'response' => esc_attr(json_decode($response['body'])->response)
-                ));
+                if (isset($response_data->response)) {
+                    echo json_encode(array(
+                        'response' => esc_attr($response_data->response)
+                    ));
+                } else {
+                    echo json_encode(array(
+                        'response' => 'Purge request submitted'
+                    ));
+                }
             }
 
         } else {

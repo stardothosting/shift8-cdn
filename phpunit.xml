@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         executionOrder="depends,defects"
+         failOnRisky="true"
+         failOnWarning="true"
+         colors="true">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+    </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">components</directory>
+            <directory suffix=".php">inc</directory>
+        </include>
+        <exclude>
+            <directory>tests</directory>
+            <directory>vendor</directory>
+            <directory>svn</directory>
+            <directory>assets</directory>
+            <directory>img</directory>
+            <directory>test</directory>
+            <file>push.sh</file>
+            <file>shift8-cdn.php</file>
+            <file>shift8-cdn-rules.php</file>
+        </exclude>
+        <report>
+            <text outputFile="tests/coverage/coverage.txt" showOnlySummary="false"/>
+            <html outputDirectory="tests/coverage/html"/>
+            <clover outputFile="tests/coverage/clover.xml"/>
+        </report>
+    </coverage>
+</phpunit>
+

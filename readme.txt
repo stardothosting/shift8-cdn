@@ -4,7 +4,7 @@
 * Tags: cdn, free cdn, speed, performance, content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 6.7.1
-* Stable tag: 1.71
+* Stable tag: 1.72.0
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -114,6 +114,20 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 3. Before / After CDN performance improvement, taken from Pingdom
 
 == Changelog ==
+
+= 1.72.0 =
+* Security: Fixed input sanitization for $_GET parameters in AJAX handlers
+* Security: Fixed broken sanitization callback for exclusion patterns
+* Security: Added output escaping for admin interface elements
+* Security: Added validation for API response data structure
+* Security: Escaped URLs in CSS output
+* Enhancement: Added comprehensive PHPUnit test suite (70 tests, 125 assertions)
+* Enhancement: Implemented test-driven development workflow with Composer
+* Enhancement: Added read-only CDN Hostname field for easy copy/paste into other caching plugins
+* Enhancement: Adopted semantic versioning (MAJOR.MINOR.PATCH format)
+
+= 1.71 =
+* Bug fixes and improvements
 
 = 1.00 =
 * Stable version created

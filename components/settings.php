@@ -15,7 +15,7 @@ function shift8_cdn_custom_favicon() {
   echo '
     <style>
     .dashicons-shift8 {
-        background-image: url("'. plugin_dir_url(dirname(__FILE__)) .'/img/shift8pluginicon.png");
+        background-image: url("' . esc_url(plugin_dir_url(dirname(__FILE__)) . 'img/shift8pluginicon.png') . '");
         background-repeat: no-repeat;
         background-position: center; 
     }
@@ -45,8 +45,7 @@ function register_shift8_cdn_settings() {
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_css', array( 'default' => 'on' ) );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_js', array( 'default' => 'on' ) );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_media', array( 'default' => 'on' ));
-    //register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_reject_files', 'shift8_cdn_sanitize_reject_field' );
-    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_reject_files' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_reject_files', 'shift8_cdn_sanitize_reject_field' );
 
     // Cleanup of old settings no longer needed
     if (get_option('shift8_cdn_email')) {
@@ -132,20 +131,40 @@ function shift8_cdn_check_paid_transient() {
   return false;
 }
 
+// Get the full CDN hostname for display/use in other plugins
+function shift8_cdn_get_hostname() {
+  $cdn_prefix = esc_attr(get_option('shift8_cdn_prefix'));
+  
+  if (empty($cdn_prefix)) {
+    return '';
+  }
+  
+  // Determine suffix based on account status
+  if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
+    return $cdn_prefix . S8CDN_SUFFIX_PAID;
+  } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
+    return $cdn_prefix . S8CDN_SUFFIX;
+  } else {
+    return $cdn_prefix . S8CDN_SUFFIX_SECOND;
+  }
+}
+
 // Sanitize settings meant for text areas
 function shift8_cdn_sanitize_reject_field( $data ) {
 
-  $sanitized_values = null;
+  $sanitized_values = array();
 
   if ( ! is_array( $data ) ) {
     $values = explode( "\n", $data );
+  } else {
+    $values = $data;
   }
 
   $values = array_map( 'trim', $values );
   $values = array_filter( $values );
 
   if ( ! $values ) {
-    return [];
+    return '';
   }
 
   // Sanitize.
@@ -169,8 +188,8 @@ function shift8_cdn_sanitize_reject_field( $data ) {
     // Finally add each sanitized value to new array
     $sanitized_values[] = $value;
   }
-  //return $sanitized_values;
-  return $data;
+  
+  return implode("\n", $sanitized_values);
 }
 
 // Sanitize settings meant for text areas

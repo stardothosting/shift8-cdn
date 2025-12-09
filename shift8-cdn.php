@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.71
+ * Version: 1.72.0
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -34,7 +34,7 @@ function shift8_cdn_settings_page() {
 <div class="wrap">
 <h2>Shift8 CDN Settings</h2>
 <?php if (is_admin()) { 
-$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'core_settings';
+$active_tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : 'core_settings';
 $plugin_data = get_plugin_data( __FILE__ );
 $plugin_name = $plugin_data['TextDomain'];
     ?>
@@ -84,7 +84,7 @@ $plugin_name = $plugin_data['TextDomain'];
     }
     ?>
     <label class="switch">
-    <input type="checkbox" name="shift8_cdn_enabled" <?php echo $enabled_checked; ?>>
+    <input type="checkbox" name="shift8_cdn_enabled" <?php echo esc_attr($enabled_checked); ?>>
     <div class="slider round"></div>
     </label>
     </td>
@@ -99,7 +99,7 @@ $plugin_name = $plugin_data['TextDomain'];
         $account_status = "Free Plan";
     }
     ?>
-    <strong><?php echo $account_status; ?></strong>
+    <strong><?php echo esc_html($account_status); ?></strong>
     <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
         <span class="shift8-cdn-tooltiptext">Note : If you have upgraded your account and dont see this status change, click the "Check" button to manually synchronize.</span>
     </div>
@@ -127,31 +127,28 @@ $plugin_name = $plugin_data['TextDomain'];
 	</tr>
     <?php if (!empty(esc_attr(get_option('shift8_cdn_prefix')))) { ?>
     <tr valign="top">
+    <th scope="row">Shift8 CDN Hostname : </th>
+    <td><input type="text" id="shift8_cdn_hostname_field" name="shift8_cdn_hostname_display" size="34" value="<?php echo esc_attr(shift8_cdn_get_hostname()); ?>" readonly style="background-color: #f0f0f1; cursor: text;" onclick="this.select();">
+    <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+        <span class="shift8-cdn-tooltiptext">Copy this hostname to use in other caching plugins that support custom CDN configuration. Click the field to select all text.</span>
+    </div>
+    </td>
+	</tr>
+    <tr valign="top">
     <th scope="row">Test URL before enabling : </th>
     <?php
         if (!empty(esc_attr(get_option('shift8_cdn_prefix'))) && !empty(esc_attr(get_option('shift8_cdn_url')))) {
-
             // Parse url properly to catch if path exists or not
             $shift8_test_path = (array_key_exists('path', wp_parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))) ? rtrim(wp_parse_url(esc_attr(get_option('shift8_cdn_url'), PHP_URL_PATH))['path'], '/') : null );
-
-            if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX_PAID) {
-                $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX_PAID . 
-                    $shift8_test_path . 
-                    '/wp-content/plugins/shift8-cdn/test/test.png';
-            } else if (shift8_cdn_check_paid_transient() === S8CDN_SUFFIX) {
-                $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX . 
-                    $shift8_test_path . 
-                    '/wp-content/plugins/shift8-cdn/test/test.png';
-            } else {
-                $shift8_test_url = 'https://' . esc_attr(get_option('shift8_cdn_prefix')) . S8CDN_SUFFIX_SECOND . 
-                    $shift8_test_path . 
-                    '/wp-content/plugins/shift8-cdn/test/test.png';
-            }
+            
+            // Use helper function to get CDN hostname
+            $shift8_cdn_hostname = shift8_cdn_get_hostname();
+            $shift8_test_url = 'https://' . $shift8_cdn_hostname . $shift8_test_path . '/wp-content/plugins/shift8-cdn/test/test.png';
         } else { 
             $shift8_test_url = null;
         }
     ?>
-    <td><a href="<?php echo $shift8_test_url; ?>" target="_new" >Click to open test URL in new tab</a>
+    <td><a href="<?php echo esc_url($shift8_test_url); ?>" target="_new" >Click to open test URL in new tab</a>
     <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
         <span class="shift8-cdn-tooltiptext">Note : this will load a test image from the CDN. If it loads correctly then it should be working!</span>
     </div>
