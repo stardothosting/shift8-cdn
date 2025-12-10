@@ -12,7 +12,7 @@ This is a plugin that integrates a 100% free CDN service operated by Shift8, for
 
 ## Community Support
 
-If you need support, please head over to our [community discourse forum](https://discourse.shift8cdn.com) for you to more easily access support resources.
+If you need support, please head over to our [community discourse forum](https://shift8.community) for you to more easily access support resources.
 
 ## Check out our new Shift8 CDN website 
 
