@@ -409,5 +409,132 @@ class RewriteClassTest extends TestCase {
         $this->assertStringContainsString('<body>', $result, 'Should preserve body tag');
         $this->assertStringContainsString('alt="Test"', $result, 'Should preserve attributes');
     }
+
+    /**
+     * Test rewrite with minification enabled for CSS
+     */
+    public function test_rewrite_with_minification_css() {
+        global $_test_options;
+        $_test_options['shift8_cdn_enabled'] = 'on';
+        $_test_options['shift8_cdn_url'] = 'http://example.com';
+        $_test_options['shift8_cdn_api'] = 'test_api';
+        $_test_options['shift8_cdn_prefix'] = 'test';
+        $_test_options['shift8_cdn_css'] = 'on';
+        $_test_options['shift8_cdn_minify_css'] = 'on';
+        
+        // Mock minification to return different URL
+        Functions\when('shift8_cdn_get_minified_url')->alias(function($url, $type) {
+            if ($type === 'css') {
+                return 'http://example.com/wp-content/uploads/shift8-cdn-cache/css/abc123.min.css';
+            }
+            return $url;
+        });
+        
+        $cdn = new \Shift8_CDN();
+        $html = '<link rel="stylesheet" href="http://example.com/wp-content/themes/theme/style.css">';
+        
+        $reflection = new \ReflectionClass($cdn);
+        $method = $reflection->getMethod('rewrite');
+        $method->setAccessible(true);
+        
+        $result = $method->invoke($cdn, $html);
+        
+        // Should contain minified cache URL, not original
+        $this->assertStringContainsString('shift8-cdn-cache', $result, 'Should use minified cached URL');
+        $this->assertStringContainsString('.min.css', $result, 'Should have .min.css extension');
+    }
+
+    /**
+     * Test rewrite skips already minified CSS files
+     */
+    public function test_rewrite_skips_already_minified_css() {
+        global $_test_options;
+        $_test_options['shift8_cdn_enabled'] = 'on';
+        $_test_options['shift8_cdn_url'] = 'http://example.com';
+        $_test_options['shift8_cdn_api'] = 'test_api';
+        $_test_options['shift8_cdn_prefix'] = 'test';
+        $_test_options['shift8_cdn_css'] = 'on';
+        $_test_options['shift8_cdn_minify_css'] = 'on';
+        
+        // Mock minification - should skip .min.css files
+        Functions\when('shift8_cdn_get_minified_url')->alias(function($url, $type) {
+            return $url; // Returns original because already minified
+        });
+        
+        $cdn = new \Shift8_CDN();
+        $html = '<link rel="stylesheet" href="http://example.com/wp-content/themes/theme/style.min.css">';
+        
+        $reflection = new \ReflectionClass($cdn);
+        $method = $reflection->getMethod('rewrite');
+        $method->setAccessible(true);
+        
+        $result = $method->invoke($cdn, $html);
+        
+        // Should still rewrite to CDN but not change to cache
+        $this->assertStringContainsString('https://test.cdn.shift8web.com', $result, 'Should apply CDN rewriting');
+        $this->assertStringContainsString('style.min.css', $result, 'Should keep original .min.css filename');
+        $this->assertStringNotContainsString('shift8-cdn-cache', $result, 'Should not use cache for already minified');
+    }
+
+    /**
+     * Test rewrite with minification enabled for JS
+     */
+    public function test_rewrite_with_minification_js() {
+        global $_test_options;
+        $_test_options['shift8_cdn_enabled'] = 'on';
+        $_test_options['shift8_cdn_url'] = 'http://example.com';
+        $_test_options['shift8_cdn_api'] = 'test_api';
+        $_test_options['shift8_cdn_prefix'] = 'test';
+        $_test_options['shift8_cdn_js'] = 'on';
+        $_test_options['shift8_cdn_minify_js'] = 'on';
+        
+        // Mock minification to return different URL
+        Functions\when('shift8_cdn_get_minified_url')->alias(function($url, $type) {
+            if ($type === 'js') {
+                return 'http://example.com/wp-content/uploads/shift8-cdn-cache/js/def456.min.js';
+            }
+            return $url;
+        });
+        
+        $cdn = new \Shift8_CDN();
+        $html = '<script src="http://example.com/wp-content/plugins/plugin/script.js"></script>';
+        
+        $reflection = new \ReflectionClass($cdn);
+        $method = $reflection->getMethod('rewrite');
+        $method->setAccessible(true);
+        
+        $result = $method->invoke($cdn, $html);
+        
+        // Should contain minified cache URL
+        $this->assertStringContainsString('shift8-cdn-cache', $result, 'Should use minified cached URL');
+        $this->assertStringContainsString('.min.js', $result, 'Should have .min.js extension');
+    }
+
+    /**
+     * Test rewrite respects exclusion for minification
+     */
+    public function test_rewrite_excluded_file_not_minified() {
+        global $_test_options;
+        $_test_options['shift8_cdn_enabled'] = 'on';
+        $_test_options['shift8_cdn_url'] = 'http://example.com';
+        $_test_options['shift8_cdn_api'] = 'test_api';
+        $_test_options['shift8_cdn_prefix'] = 'test';
+        $_test_options['shift8_cdn_css'] = 'on';
+        $_test_options['shift8_cdn_minify_css'] = 'on';
+        $_test_options['shift8_cdn_reject_files'] = "/wp-content/themes/theme/exclude.css";
+        
+        $cdn = new \Shift8_CDN();
+        $html = '<link rel="stylesheet" href="http://example.com/wp-content/themes/theme/exclude.css">';
+        
+        $reflection = new \ReflectionClass($cdn);
+        $method = $reflection->getMethod('rewrite');
+        $method->setAccessible(true);
+        
+        $result = $method->invoke($cdn, $html);
+        
+        // Should not be rewritten at all (excluded from both CDN and minification)
+        $this->assertStringContainsString('http://example.com/wp-content/themes/theme/exclude.css', $result, 'Should preserve excluded file URL');
+        $this->assertStringNotContainsString('shift8-cdn-cache', $result, 'Excluded files should not be minified');
+    }
 }
 

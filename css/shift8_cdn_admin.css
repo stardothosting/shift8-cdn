@@ -51,7 +51,8 @@
 	padding-right:25px;
 	margin:0 auto;
 }
-.shift8-cdn-table input {
+.shift8-cdn-table input[type="text"],
+.shift8-cdn-table input[type="url"] {
     width:50%;
 }
 

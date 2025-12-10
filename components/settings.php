@@ -45,6 +45,8 @@ function register_shift8_cdn_settings() {
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_css', array( 'default' => 'on' ) );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_js', array( 'default' => 'on' ) );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_media', array( 'default' => 'on' ));
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_minify_css' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_minify_js' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_reject_files', 'shift8_cdn_sanitize_reject_field' );
 
     // Cleanup of old settings no longer needed
@@ -63,12 +65,32 @@ function shift8_cdn_uninstall_hook() {
   delete_option('shift8_cdn_css');
   delete_option('shift8_cdn_js');
   delete_option('shift8_cdn_media');
+  delete_option('shift8_cdn_minify_css');
+  delete_option('shift8_cdn_minify_js');
   delete_option('shift8_cdn_reject_files');
 
   // Clear Cron tasks
   wp_clear_scheduled_hook( 'shift8_cdn_cron_hook' );
   // Delete transient data
   delete_transient(S8CDN_PAID_CHECK);
+  delete_transient('shift8_cdn_minify_map');
+  
+  // Clear minified cache
+  shift8_cdn_clear_cache();
+  
+  // Remove cache directory
+  $cache_dir = shift8_cdn_get_cache_dir();
+  if (file_exists($cache_dir)) {
+    // Remove subdirectories
+    if (file_exists($cache_dir . '/css')) {
+      rmdir($cache_dir . '/css');
+    }
+    if (file_exists($cache_dir . '/js')) {
+      rmdir($cache_dir . '/js');
+    }
+    // Remove main directory
+    rmdir($cache_dir);
+  }
 }
 register_uninstall_hook( S8CDN_FILE, 'shift8_cdn_uninstall_hook' );
 
@@ -147,6 +169,121 @@ function shift8_cdn_get_hostname() {
   } else {
     return $cdn_prefix . S8CDN_SUFFIX_SECOND;
   }
+}
+
+// Check if a file is already minified based on filename
+function shift8_cdn_is_already_minified($url) {
+  // Check for .min.css or .min.js extension
+  if (preg_match('/\.min\.(css|js)$/i', $url)) {
+    return true;
+  }
+  
+  // Check for common minified file patterns
+  if (preg_match('/[-_\.]min[-_\.]/i', $url)) {
+    return true;
+  }
+  
+  return false;
+}
+
+// Get the cache directory path for minified files
+function shift8_cdn_get_cache_dir() {
+  $upload_dir = wp_upload_dir();
+  $cache_dir = $upload_dir['basedir'] . '/shift8-cdn-cache';
+  
+  return $cache_dir;
+}
+
+// Create cache directory if it doesn't exist
+function shift8_cdn_create_cache_dir() {
+  $cache_dir = shift8_cdn_get_cache_dir();
+  
+  if (!file_exists($cache_dir)) {
+    wp_mkdir_p($cache_dir);
+    wp_mkdir_p($cache_dir . '/css');
+    wp_mkdir_p($cache_dir . '/js');
+    
+    // Add index.php to prevent directory listing
+    file_put_contents($cache_dir . '/index.php', '<?php // Silence is golden');
+    file_put_contents($cache_dir . '/css/index.php', '<?php // Silence is golden');
+    file_put_contents($cache_dir . '/js/index.php', '<?php // Silence is golden');
+  }
+  
+  return file_exists($cache_dir) && is_writable($cache_dir);
+}
+
+// Get cached minified file path for a given URL
+function shift8_cdn_get_cached_file_path($url, $type = 'css') {
+  $cache_dir = shift8_cdn_get_cache_dir();
+  $hash = md5($url);
+  
+  return $cache_dir . '/' . $type . '/' . $hash . '.min.' . $type;
+}
+
+// Get cache statistics
+function shift8_cdn_get_cache_stats() {
+  $cache_dir = shift8_cdn_get_cache_dir();
+  $stats = array(
+    'css_count' => 0,
+    'js_count' => 0,
+    'total_size' => 0
+  );
+  
+  if (!file_exists($cache_dir)) {
+    return $stats;
+  }
+  
+  // Count CSS files
+  $css_files = glob($cache_dir . '/css/*.min.css');
+  $stats['css_count'] = is_array($css_files) ? count($css_files) : 0;
+  
+  // Count JS files
+  $js_files = glob($cache_dir . '/js/*.min.js');
+  $stats['js_count'] = is_array($js_files) ? count($js_files) : 0;
+  
+  // Calculate total size
+  $all_files = array_merge($css_files ?: array(), $js_files ?: array());
+  foreach ($all_files as $file) {
+    if (file_exists($file)) {
+      $stats['total_size'] += filesize($file);
+    }
+  }
+  
+  return $stats;
+}
+
+// Clear minified cache
+function shift8_cdn_clear_cache() {
+  $cache_dir = shift8_cdn_get_cache_dir();
+  
+  if (!file_exists($cache_dir)) {
+    return true;
+  }
+  
+  // Delete CSS cache files
+  $css_files = glob($cache_dir . '/css/*.min.css');
+  if (is_array($css_files)) {
+    foreach ($css_files as $file) {
+      if (file_exists($file)) {
+        unlink($file);
+      }
+    }
+  }
+  
+  // Delete JS cache files
+  $js_files = glob($cache_dir . '/js/*.min.js');
+  if (is_array($js_files)) {
+    foreach ($js_files as $file) {
+      if (file_exists($file)) {
+        unlink($file);
+      }
+    }
+  }
+  
+  // Delete transients
+  delete_transient('shift8_cdn_minify_map');
+  
+  return true;
 }
 
 // Sanitize settings meant for text areas

@@ -7,6 +7,60 @@ jQuery(document).ready(function() {
         textArea.placeholder = textArea.placeholder.replace(/\\n/g, '\n');
     }
 
+    // Handle enable/disable of minify checkboxes based on parent CDN checkboxes
+    jQuery('#shift8_cdn_css').on('change', function() {
+        if (jQuery(this).is(':checked')) {
+            jQuery('#shift8_cdn_minify_css').prop('disabled', false);
+        } else {
+            jQuery('#shift8_cdn_minify_css').prop('disabled', true).prop('checked', false);
+        }
+    });
+
+    jQuery('#shift8_cdn_js').on('change', function() {
+        if (jQuery(this).is(':checked')) {
+            jQuery('#shift8_cdn_minify_js').prop('disabled', false);
+        } else {
+            jQuery('#shift8_cdn_minify_js').prop('disabled', true).prop('checked', false);
+        }
+    });
+
+    // Handle clear cache button
+    jQuery(document).on('click', '#shift8-cdn-clear-cache', function(e) {
+        e.preventDefault();
+        var button = jQuery(this);
+        var url = button.attr('href');
+        
+        button.prop('disabled', true).text('Clearing...');
+        
+        jQuery.ajax({
+            url: url,
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    jQuery('.shift8-cdn-cache-response').html('✓ ' + data.data).css('color', 'green').fadeIn();
+                    button.prop('disabled', false).text('Clear Minified Cache');
+                    // Reload page to update cache stats
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    jQuery('.shift8-cdn-cache-response').html('✗ ' + data.data).css('color', 'red').fadeIn();
+                    button.prop('disabled', false).text('Clear Minified Cache');
+                }
+                setTimeout(function() {
+                    jQuery('.shift8-cdn-cache-response').fadeOut();
+                }, 5000);
+            },
+            error: function(errorThrown) {
+                console.log('Error : ' + JSON.stringify(errorThrown));
+                jQuery('.shift8-cdn-cache-response').html('✗ Error clearing cache').css('color', 'red').fadeIn();
+                button.prop('disabled', false).text('Clear Minified Cache');
+                setTimeout(function() {
+                    jQuery('.shift8-cdn-cache-response').fadeOut();
+                }, 5000);
+            }
+        });
+    });
 
     // Check & synchronize config of CDN account
     jQuery(document).on( 'click', '#shift8-cdn-check', function(e) {

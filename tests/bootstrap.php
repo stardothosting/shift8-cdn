@@ -188,6 +188,13 @@ Functions\stubs([
         'baseurl' => 'http://example.com/wp-content/uploads',
         'error' => false
     ),
+    'wp_mkdir_p' => true,
+    'wp_send_json_success' => function($data) {
+        echo json_encode(['success' => true, 'data' => $data]);
+    },
+    'wp_send_json_error' => function($data) {
+        echo json_encode(['success' => false, 'data' => $data]);
+    },
 ]);
 
 // Mock user capability checks

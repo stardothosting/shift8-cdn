@@ -3,8 +3,8 @@
 * Donate link: https://www.shift8web.ca
 * Tags: cdn, free cdn, speed, performance, content delivery network
 * Requires at least: 3.0.1
-* Tested up to: 6.7.1
-* Stable tag: 1.72.0
+* Tested up to: 6.9
+* Stable tag: 1.72.1
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -115,6 +115,14 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 3. Before / After CDN performance improvement, taken from Pingdom
 
 ## Changelog 
+
+### 1.72.1
+* Enhancement: Added PHP version check (requires PHP 7.4+) with helpful admin notice
+* Enhancement: Added composer autoloader check with graceful fallback
+* Enhancement: Updated plugin headers (Requires PHP, Text Domain)
+* Testing: Added 34 new comprehensive tests for minification features (total: 123 tests)
+* Testing: Added tests for cache invalidation, file size limits, error handling
+* Testing: Improved test coverage for all hosting environment edge cases
 
 ### 1.72.0
 * Security: Fixed input sanitization for $_GET parameters in AJAX handlers

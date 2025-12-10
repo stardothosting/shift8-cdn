@@ -70,13 +70,28 @@ class Shift8_CDN {
 		return preg_replace_callback(
 			$pattern,
 			function( $matches ) {
-				$uri = wp_parse_url($matches['url']);
-				$query_string = (wp_parse_url($matches['url'], PHP_URL_QUERY) ? '?' . parse_url($matches['url'], PHP_URL_QUERY) : null);
-				if (!$this->is_excluded( $matches['url'] )) {
-					return str_replace($matches['url'], $this->shift8_subst . $uri['path'] . $query_string, $matches[0]);
-				} else {
-					return $matches[0];									
+				$url = $matches['url'];
+				
+				// Check if excluded first (exclusions apply to both CDN and minification)
+				if ($this->is_excluded($url)) {
+					return $matches[0];
 				}
+				
+				// Check if this is a CSS or JS file and minification is enabled
+				$extension = pathinfo(wp_parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+				if ($extension === 'css' || $extension === 'js') {
+					// Attempt to get minified version
+					$minified_url = shift8_cdn_get_minified_url($url, $extension);
+					if ($minified_url !== $url) {
+						// Minified version available, use it
+						$url = $minified_url;
+					}
+				}
+				
+				// Now apply CDN rewriting
+				$uri = wp_parse_url($url);
+				$query_string = (wp_parse_url($url, PHP_URL_QUERY) ? '?' . parse_url($url, PHP_URL_QUERY) : null);
+				return str_replace($matches['url'], $this->shift8_subst . $uri['path'] . $query_string, $matches[0]);
 			},
 			$html
 		);

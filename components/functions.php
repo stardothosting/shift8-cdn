@@ -311,6 +311,148 @@ function shift8_cdn_add_cron_interval( $schedules ) {
     return $schedules;
 }
 
+// Minify CSS content using MatthiasMullie\Minify
+function shift8_cdn_minify_css($content) {
+    if (!class_exists('MatthiasMullie\\Minify\\CSS')) {
+        return $content; // Fallback if library not available
+    }
+    
+    try {
+        $minifier = new MatthiasMullie\Minify\CSS($content);
+        return $minifier->minify();
+    } catch (Exception $e) {
+        // Log error if WP_DEBUG is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Shift8 CDN: CSS minification error - ' . esc_html($e->getMessage()));
+        }
+        return $content; // Return original on error
+    }
+}
+
+// Minify JS content using MatthiasMullie\Minify
+function shift8_cdn_minify_js($content) {
+    if (!class_exists('MatthiasMullie\\Minify\\JS')) {
+        return $content; // Fallback if library not available
+    }
+    
+    try {
+        $minifier = new MatthiasMullie\Minify\JS($content);
+        return $minifier->minify();
+    } catch (Exception $e) {
+        // Log error if WP_DEBUG is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Shift8 CDN: JS minification error - ' . esc_html($e->getMessage()));
+        }
+        return $content; // Return original on error
+    }
+}
+
+// Get or create minified version of a file
+function shift8_cdn_get_minified_url($url, $type = 'css') {
+    // Skip if minification not enabled for this type
+    if ($type === 'css' && esc_attr(get_option('shift8_cdn_minify_css')) !== 'on') {
+        return $url;
+    }
+    if ($type === 'js' && esc_attr(get_option('shift8_cdn_minify_js')) !== 'on') {
+        return $url;
+    }
+    
+    // Skip if already minified
+    if (shift8_cdn_is_already_minified($url)) {
+        return $url;
+    }
+    
+    // Skip external URLs
+    $site_url = get_site_url();
+    if (strpos($url, $site_url) === false && strpos($url, '/') === 0) {
+        // Relative URL, make it absolute for processing
+        $url = $site_url . $url;
+    } else if (strpos($url, $site_url) === false) {
+        // External URL, skip
+        return $url;
+    }
+    
+    // Create cache directory if needed
+    if (!shift8_cdn_create_cache_dir()) {
+        return $url; // Can't create cache, return original
+    }
+    
+    // Get cached file path
+    $cached_file = shift8_cdn_get_cached_file_path($url, $type);
+    
+    // Check if cached version exists and is still valid
+    $parsed_url = wp_parse_url($url);
+    $local_path = ABSPATH . ltrim($parsed_url['path'], '/');
+    
+    if (file_exists($cached_file) && file_exists($local_path)) {
+        // Check if source file has been modified
+        if (filemtime($cached_file) >= filemtime($local_path)) {
+            // Cache is still valid, return URL to cached file
+            $upload_dir = wp_upload_dir();
+            return str_replace($upload_dir['basedir'], $upload_dir['baseurl'], $cached_file);
+        }
+    }
+    
+    // Need to generate minified version
+    if (!file_exists($local_path) || !is_readable($local_path)) {
+        return $url; // Can't read source file
+    }
+    
+    // Check file size (skip files larger than 5MB)
+    $file_size = filesize($local_path);
+    if ($file_size > 5 * 1024 * 1024) {
+        return $url;
+    }
+    
+    // Read source file
+    $content = file_get_contents($local_path);
+    if ($content === false) {
+        return $url;
+    }
+    
+    // Minify content
+    if ($type === 'css') {
+        $minified = shift8_cdn_minify_css($content);
+    } else {
+        $minified = shift8_cdn_minify_js($content);
+    }
+    
+    // Save to cache
+    if (file_put_contents($cached_file, $minified) === false) {
+        return $url; // Failed to write cache
+    }
+    
+    // Return URL to cached file
+    $upload_dir = wp_upload_dir();
+    return str_replace($upload_dir['basedir'], $upload_dir['baseurl'], $cached_file);
+}
+
+// Handle cache clear AJAX request
+add_action( 'wp_ajax_shift8_cdn_clear_cache', 'shift8_cdn_clear_cache_ajax' );
+function shift8_cdn_clear_cache_ajax() {
+    // Verify nonce
+    $nonce = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
+    if (!wp_verify_nonce($nonce, 'shift8_cdn_clear_cache')) {
+        wp_send_json_error('Invalid nonce');
+        die();
+    }
+    
+    // Check user capability
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Insufficient permissions');
+        die();
+    }
+    
+    // Clear cache
+    if (shift8_cdn_clear_cache()) {
+        wp_send_json_success('Cache cleared successfully');
+    } else {
+        wp_send_json_error('Failed to clear cache');
+    }
+    
+    die();
+}
+
 // Set the cron task on an every 4 hour basis to check the CDN suffix
 if (shift8_cdn_check_enabled()) {
     if ( ! wp_next_scheduled( 'shift8_cdn_cron_hook' ) ) {

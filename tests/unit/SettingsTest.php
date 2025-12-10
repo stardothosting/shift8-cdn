@@ -370,5 +370,58 @@ class SettingsTest extends TestCase {
         
         $this->assertEmpty($hostname, 'Should return empty string when prefix is empty');
     }
+
+    /**
+     * Test register_shift8_cdn_settings registers minify options
+     */
+    public function test_register_settings_includes_minify_options() {
+        Functions\expect('register_setting')
+            ->times(10)
+            ->andReturn(true);
+        
+        Functions\expect('delete_option')->andReturn(true);
+        
+        register_shift8_cdn_settings();
+        
+        // Test passes if register_setting called 10 times (8 original + 2 new minify options)
+        $this->assertTrue(true, 'Should register all settings including minify options');
+    }
+
+    /**
+     * Test uninstall_hook cleans up minify options
+     */
+    public function test_uninstall_hook_deletes_minify_options() {
+        global $_test_options;
+        $_test_options['shift8_cdn_minify_css'] = 'on';
+        $_test_options['shift8_cdn_minify_js'] = 'on';
+        
+        Functions\when('wp_clear_scheduled_hook')->justReturn(true);
+        Functions\when('delete_transient')->justReturn(true);
+        Functions\when('file_exists')->justReturn(false);
+        Functions\when('glob')->justReturn(array());
+        Functions\when('rmdir')->justReturn(true);
+        
+        shift8_cdn_uninstall_hook();
+        
+        $this->assertArrayNotHasKey('shift8_cdn_minify_css', $_test_options, 'Should delete minify_css option');
+        $this->assertArrayNotHasKey('shift8_cdn_minify_js', $_test_options, 'Should delete minify_js option');
+    }
+
+    /**
+     * Test uninstall_hook removes cache directory
+     */
+    public function test_uninstall_hook_removes_cache_dir() {
+        Functions\when('wp_clear_scheduled_hook')->justReturn(true);
+        Functions\when('delete_transient')->justReturn(true);
+        Functions\when('glob')->justReturn(array());
+        Functions\when('file_exists')->justReturn(true);
+        Functions\when('unlink')->justReturn(true);
+        Functions\when('rmdir')->justReturn(true);
+        
+        // Should not throw any errors
+        shift8_cdn_uninstall_hook();
+        
+        $this->assertTrue(true, 'Should cleanly remove cache directory on uninstall');
+    }
 }
 

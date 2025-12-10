@@ -1,6 +1,16 @@
 {
     "redefinable-internals": [
-        "phpversion"
+        "phpversion",
+        "glob",
+        "file_exists",
+        "filesize",
+        "filemtime",
+        "is_writable",
+        "is_readable",
+        "unlink",
+        "rmdir",
+        "file_put_contents",
+        "file_get_contents"
     ]
 }
 
