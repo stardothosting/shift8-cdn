@@ -218,3 +218,194 @@ input:checked + .slider:before {
 .shift8-cdn-tooltip:hover .shift8-cdn-tooltiptext {
   visibility: visible;
 }
+
+/* ==================================================
+   V2.0 Card-Based Layout & Modern UI Components
+   ================================================== */
+
+/* Card container */
+.shift8-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+}
+
+/* Card header */
+.shift8-card-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+/* Card body */
+.shift8-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Setting row */
+.shift8-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 30px;
+    gap: 30px;
+}
+
+.shift8-setting-label {
+    font-size: 13px;
+    color: #2c3338;
+    flex: 1;
+}
+
+.shift8-setting-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Info text */
+.shift8-info {
+    font-size: 12px;
+    color: #646970;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+/* Sub-tab navigation - minimal style */
+.shift8-subtab-wrapper {
+    margin: 20px 0 30px 0;
+    padding: 0;
+    border-bottom: 2px solid #f0f0f1;
+}
+
+.shift8-subtab-wrapper .nav-tab {
+    border: none;
+    background: transparent;
+    padding: 8px 16px;
+    margin: 0 4px 0 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #646970;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+}
+
+.shift8-subtab-wrapper .nav-tab:hover {
+    color: #2271b1;
+    background: transparent;
+    border-bottom-color: #2271b1;
+}
+
+.shift8-subtab-wrapper .nav-tab-active {
+    color: #2271b1;
+    background: transparent;
+    border-bottom: 2px solid #2271b1;
+    font-weight: 600;
+}
+
+/* Modern toggle switch (replaces old .switch/.slider) */
+.shift8-toggle-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.shift8-toggle-label {
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    background: #8c8f94;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.shift8-toggle-switch {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: left 0.3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.shift8-toggle-checkbox:checked + .shift8-toggle-label {
+    background: #2271b1;
+}
+
+.shift8-toggle-checkbox:checked + .shift8-toggle-label .shift8-toggle-switch {
+    left: 28px;
+}
+
+.shift8-toggle-checkbox:disabled + .shift8-toggle-label {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #dcdcde;
+}
+
+.shift8-toggle-checkbox:focus + .shift8-toggle-label {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px #2271b1;
+}
+
+/* Read-only input styling */
+.shift8-readonly-input {
+    background-color: #f0f0f1 !important;
+    cursor: text !important;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+/* Coming soon placeholder */
+.shift8-coming-soon {
+    background: #f6f7f7;
+    border: 1px dashed #c3c4c7;
+    border-radius: 4px;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.shift8-coming-soon h3 {
+    color: #1d2327;
+    margin-bottom: 16px;
+}
+
+.shift8-coming-soon ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.shift8-coming-soon li {
+    color: #646970;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.shift8-coming-soon li:before {
+    content: "• ";
+    color: #2271b1;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+/* Cache stats styling */
+.shift8-cache-stats {
+    font-family: monospace;
+    font-size: 13px;
+    color: #646970;
+    margin-bottom: 12px;
+}

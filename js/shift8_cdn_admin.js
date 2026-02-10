@@ -24,6 +24,15 @@ jQuery(document).ready(function() {
         }
     });
 
+    // Handle enable/disable of HTML minification sub-options
+    jQuery('#shift8_cdn_minify_html').on('change', function() {
+        if (jQuery(this).is(':checked')) {
+            jQuery('.shift8-html-option').prop('disabled', false);
+        } else {
+            jQuery('.shift8-html-option').prop('disabled', true).prop('checked', false);
+        }
+    });
+
     // Handle clear cache button
     jQuery(document).on('click', '#shift8-cdn-clear-cache', function(e) {
         e.preventDefault();

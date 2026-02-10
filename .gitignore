@@ -69,3 +69,7 @@ push.exclude
 .codacy
 /.cursor
 
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md

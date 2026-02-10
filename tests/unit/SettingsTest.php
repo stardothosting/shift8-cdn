@@ -376,14 +376,14 @@ class SettingsTest extends TestCase {
      */
     public function test_register_settings_includes_minify_options() {
         Functions\expect('register_setting')
-            ->times(10)
+            ->times(13)
             ->andReturn(true);
         
         Functions\expect('delete_option')->andReturn(true);
         
         register_shift8_cdn_settings();
         
-        // Test passes if register_setting called 10 times (8 original + 2 new minify options)
+        // Test passes if register_setting called 13 times (8 original + 2 CSS/JS minify + 3 HTML minify options)
         $this->assertTrue(true, 'Should register all settings including minify options');
     }
 
@@ -395,8 +395,21 @@ class SettingsTest extends TestCase {
         $_test_options['shift8_cdn_minify_css'] = 'on';
         $_test_options['shift8_cdn_minify_js'] = 'on';
         
+        Functions\when('wp_upload_dir')->justReturn(array(
+            'path' => '/tmp/uploads',
+            'url' => 'http://example.com/wp-content/uploads',
+            'subdir' => '',
+            'basedir' => '/tmp/uploads',
+            'baseurl' => 'http://example.com/wp-content/uploads',
+            'error' => false
+        ));
         Functions\when('wp_clear_scheduled_hook')->justReturn(true);
         Functions\when('delete_transient')->justReturn(true);
+        Functions\when('delete_option')->alias(function($option) {
+            global $_test_options;
+            unset($_test_options[$option]);
+            return true;
+        });
         Functions\when('file_exists')->justReturn(false);
         Functions\when('glob')->justReturn(array());
         Functions\when('rmdir')->justReturn(true);
@@ -411,8 +424,17 @@ class SettingsTest extends TestCase {
      * Test uninstall_hook removes cache directory
      */
     public function test_uninstall_hook_removes_cache_dir() {
+        Functions\when('wp_upload_dir')->justReturn(array(
+            'path' => '/tmp/uploads',
+            'url' => 'http://example.com/wp-content/uploads',
+            'subdir' => '',
+            'basedir' => '/tmp/uploads',
+            'baseurl' => 'http://example.com/wp-content/uploads',
+            'error' => false
+        ));
         Functions\when('wp_clear_scheduled_hook')->justReturn(true);
         Functions\when('delete_transient')->justReturn(true);
+        Functions\when('delete_option')->justReturn(true);
         Functions\when('glob')->justReturn(array());
         Functions\when('file_exists')->justReturn(true);
         Functions\when('unlink')->justReturn(true);

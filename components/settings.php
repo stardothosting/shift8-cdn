@@ -23,6 +23,24 @@ function shift8_cdn_custom_favicon() {
   '; 
 }
 
+add_action('admin_notices', 'shift8_cdn_migration_notice');
+function shift8_cdn_migration_notice() {
+  if (!current_user_can('manage_options')) {
+    return;
+  }
+
+  $atomic_edge_install_url = admin_url('plugin-install.php?tab=search&type=term&s=atomic+edge+security');
+  $password_reset_url = 'https://dashboard.atomicedge.io/password-reset/request';
+
+  $notice = sprintf(
+    'Shift8 CDN as a service is migrating into <a href="%1$s">Atomic Edge</a>. Your user account has been migrated to the new dashboard, <a href="%2$s" target="_blank" rel="noopener noreferrer">click here</a> to reset your password.',
+    esc_url($atomic_edge_install_url),
+    esc_url($password_reset_url)
+  );
+
+  echo '<div class="notice notice-warning"><p>' . wp_kses_post($notice) . '</p></div>';
+}
+
 // create custom plugin settings menu
 add_action('admin_menu', 'shift8_cdn_create_menu');
 function shift8_cdn_create_menu() {
@@ -47,6 +65,9 @@ function register_shift8_cdn_settings() {
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_media', array( 'default' => 'on' ));
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_minify_css' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_minify_js' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_minify_html' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_minify_html_skip_logged_in' );
+    register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_minify_html_preserve_comments' );
     register_setting( 'shift8-cdn-settings-group', 'shift8_cdn_reject_files', 'shift8_cdn_sanitize_reject_field' );
 
     // Cleanup of old settings no longer needed
@@ -67,6 +88,9 @@ function shift8_cdn_uninstall_hook() {
   delete_option('shift8_cdn_media');
   delete_option('shift8_cdn_minify_css');
   delete_option('shift8_cdn_minify_js');
+  delete_option('shift8_cdn_minify_html');
+  delete_option('shift8_cdn_minify_html_skip_logged_in');
+  delete_option('shift8_cdn_minify_html_preserve_comments');
   delete_option('shift8_cdn_reject_files');
 
   // Clear Cron tasks

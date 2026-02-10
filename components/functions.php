@@ -195,6 +195,9 @@ function shift8_cdn_prefetch() {
 
 add_action('wp_head', 'shift8_cdn_prefetch', 0);
 
+// Add HTML minification to output buffer (runs AFTER URL rewriting at priority 999)
+add_filter('rewrite_urls', 'shift8_cdn_minify_html', 999, 1);
+
 
 // Functions to produce debugging information
 function shift8_cdn_debug_get_php_info() {
@@ -347,6 +350,138 @@ function shift8_cdn_minify_js($content) {
     }
 }
 
+// Minify HTML content
+function shift8_cdn_minify_html($html) {
+    // Skip if disabled
+    if (esc_attr(get_option('shift8_cdn_minify_html')) !== 'on') {
+        return $html;
+    }
+    
+    // Skip in admin area
+    if (is_admin()) {
+        return $html;
+    }
+    
+    // Skip for logged-in users if option is enabled
+    if (esc_attr(get_option('shift8_cdn_minify_html_skip_logged_in')) === 'on' && is_user_logged_in()) {
+        return $html;
+    }
+    
+    // Skip for page builder edit modes
+    if (shift8_cdn_is_page_builder_active()) {
+        return $html;
+    }
+    
+    try {
+        // Preserve important blocks
+        $preserved_blocks = array();
+        $preserve_index = 0;
+        
+        // Preserve script tags
+        $html = preg_replace_callback('/<script\b[^>]*>.*?<\/script>/is', function($matches) use (&$preserved_blocks, &$preserve_index) {
+            $placeholder = '___SHIFT8_PRESERVE_' . $preserve_index . '___';
+            $preserved_blocks[$placeholder] = $matches[0];
+            $preserve_index++;
+            return $placeholder;
+        }, $html);
+        
+        // Preserve style tags
+        $html = preg_replace_callback('/<style\b[^>]*>.*?<\/style>/is', function($matches) use (&$preserved_blocks, &$preserve_index) {
+            $placeholder = '___SHIFT8_PRESERVE_' . $preserve_index . '___';
+            $preserved_blocks[$placeholder] = $matches[0];
+            $preserve_index++;
+            return $placeholder;
+        }, $html);
+        
+        // Preserve pre tags
+        $html = preg_replace_callback('/<pre\b[^>]*>.*?<\/pre>/is', function($matches) use (&$preserved_blocks, &$preserve_index) {
+            $placeholder = '___SHIFT8_PRESERVE_' . $preserve_index . '___';
+            $preserved_blocks[$placeholder] = $matches[0];
+            $preserve_index++;
+            return $placeholder;
+        }, $html);
+        
+        // Preserve textarea tags
+        $html = preg_replace_callback('/<textarea\b[^>]*>.*?<\/textarea>/is', function($matches) use (&$preserved_blocks, &$preserve_index) {
+            $placeholder = '___SHIFT8_PRESERVE_' . $preserve_index . '___';
+            $preserved_blocks[$placeholder] = $matches[0];
+            $preserve_index++;
+            return $placeholder;
+        }, $html);
+        
+        // Remove HTML comments unless preservation is enabled
+        if (esc_attr(get_option('shift8_cdn_minify_html_preserve_comments')) !== 'on') {
+            // Preserve conditional comments for IE
+            $html = preg_replace_callback('/<!--\[if\b[^\]]*\]>.*?<!\[endif\]-->/is', function($matches) use (&$preserved_blocks, &$preserve_index) {
+                $placeholder = '___SHIFT8_PRESERVE_' . $preserve_index . '___';
+                $preserved_blocks[$placeholder] = $matches[0];
+                $preserve_index++;
+                return $placeholder;
+            }, $html);
+            
+            // Remove regular comments
+            $html = preg_replace('/<!--(?!\[if\b).*?-->/s', '', $html);
+        }
+        
+        // Remove whitespace between tags
+        $html = preg_replace('/>\s+</', '><', $html);
+        
+        // Remove leading/trailing whitespace on each line
+        $html = preg_replace('/^\s+/m', '', $html);
+        $html = preg_replace('/\s+$/m', '', $html);
+        
+        // Collapse multiple spaces into one
+        $html = preg_replace('/\s{2,}/', ' ', $html);
+        
+        // Remove empty lines
+        $html = preg_replace('/\n+/', "\n", $html);
+        
+        // Restore preserved blocks
+        foreach ($preserved_blocks as $placeholder => $content) {
+            $html = str_replace($placeholder, $content, $html);
+        }
+        
+        return $html;
+        
+    } catch (Exception $e) {
+        // Log error if WP_DEBUG is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Shift8 CDN: HTML minification error - ' . esc_html($e->getMessage()));
+        }
+        return $html; // Return original on error
+    }
+}
+
+// Check if page builder is in edit mode
+function shift8_cdn_is_page_builder_active() {
+    // Elementor edit mode
+    if (isset($_GET['elementor-preview']) || (isset($_GET['action']) && $_GET['action'] === 'elementor')) {
+        return true;
+    }
+    
+    // Divi builder
+    if (function_exists('et_core_is_fb_enabled') && et_core_is_fb_enabled()) {
+        return true;
+    }
+    
+    // Beaver Builder
+    if (isset($_GET['fl_builder'])) {
+        return true;
+    }
+    
+    // Oxygen builder
+    if (defined('CT_VERSION') && isset($_GET['ct_builder'])) {
+        return true;
+    }
+    
+    // Bricks builder
+    if (isset($_GET['bricks']) && $_GET['bricks'] === 'run') {
+        return true;
+    }
+    
+    return false;
+}
+
 // Get or create minified version of a file
 function shift8_cdn_get_minified_url($url, $type = 'css') {
     // Skip if minification not enabled for this type
@@ -450,7 +585,9 @@ function shift8_cdn_clear_cache_ajax() {
         wp_send_json_error('Failed to clear cache');
     }
     
-    die();
+    if (!defined('PHPUNIT_RUNNING')) {
+        die();
+    }
 }
 
 // Set the cron task on an every 4 hour basis to check the CDN suffix

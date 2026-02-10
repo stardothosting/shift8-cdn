@@ -402,11 +402,7 @@ class APIFunctionsTest extends TestCase {
         });
         
         ob_start();
-        try {
-            shift8_cdn_clear_cache_ajax();
-        } catch (\Exception $e) {
-            // Expected die()
-        }
+        shift8_cdn_clear_cache_ajax();
         $output = ob_get_clean();
         
         $this->assertStringContainsString('success', $output, 'Should return success response');
@@ -420,17 +416,14 @@ class APIFunctionsTest extends TestCase {
     public function test_ajax_clear_cache_invalid_nonce() {
         $_GET['_wpnonce'] = 'invalid_nonce';
         
+        Functions\when('wp_unslash')->returnArg();
         Functions\when('wp_verify_nonce')->justReturn(false);
         Functions\when('wp_send_json_error')->alias(function($data) {
             echo json_encode(['success' => false, 'data' => $data]);
         });
         
         ob_start();
-        try {
-            shift8_cdn_clear_cache_ajax();
-        } catch (\Exception $e) {
-            // Expected die()
-        }
+        shift8_cdn_clear_cache_ajax();
         $output = ob_get_clean();
         
         $this->assertStringContainsString('Invalid nonce', $output, 'Should return nonce error');
@@ -444,6 +437,7 @@ class APIFunctionsTest extends TestCase {
     public function test_ajax_clear_cache_no_capability() {
         $_GET['_wpnonce'] = 'valid_nonce';
         
+        Functions\when('wp_unslash')->returnArg();
         Functions\when('wp_verify_nonce')->justReturn(true);
         Functions\when('current_user_can')->justReturn(false);
         Functions\when('wp_send_json_error')->alias(function($data) {
@@ -451,11 +445,7 @@ class APIFunctionsTest extends TestCase {
         });
         
         ob_start();
-        try {
-            shift8_cdn_clear_cache_ajax();
-        } catch (\Exception $e) {
-            // Expected die()
-        }
+        shift8_cdn_clear_cache_ajax();
         $output = ob_get_clean();
         
         $this->assertStringContainsString('Insufficient permissions', $output, 'Should return permission error');

@@ -20,6 +20,6 @@ if ( !defined( 'S8CDN_TEST_README_URL' ) )
 
 define( 'S8CDN_API' , 'https://shift8cdn.com');
 define( 'S8CDN_SUFFIX_PAID', '.wpcdn.shift8cdn.com');
-define( 'S8CDN_SUFFIX', '.cdn.shift8web.ca');
-define( 'S8CDN_SUFFIX_SECOND', '.cdn.shift8web.com');
+define( 'S8CDN_SUFFIX', '.wpcdn.shift8cdn.com');
+define( 'S8CDN_SUFFIX_SECOND', '.wpcdn.shift8cdn.com');
 define( 'S8CDN_PAID_CHECK', 'shift8_cdn_check');

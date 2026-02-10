@@ -3,7 +3,7 @@
  * Plugin Name: Shift8 CDN 
  * Plugin URI: https://github.com/stardothosting/shift8-cdn
  * Description: Plugin that integrates a fully functional CDN service
- * Version: 1.72.1
+ * Version: 2.0.1
  * Author: Shift8 Web 
  * Author URI: https://www.shift8web.ca
  * License: GPLv3
@@ -57,8 +57,21 @@ function shift8_cdn_settings_page() {
 ?>
 <div class="wrap">
 <h2>Shift8 CDN Settings</h2>
+
+<?php
+// Display success message after settings save
+if (isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true') {
+    ?>
+    <div class="notice notice-success is-dismissible">
+        <p><strong>Settings saved successfully.</strong></p>
+    </div>
+    <?php
+}
+?>
+
 <?php if (is_admin()) { 
 $active_tab = isset($_GET['tab']) ? sanitize_text_field(wp_unslash($_GET['tab'])) : 'core_settings';
+$cdn_subtab = isset($_GET['cdn_subtab']) ? sanitize_text_field(wp_unslash($_GET['cdn_subtab'])) : 'general';
 $plugin_data = get_plugin_data( __FILE__ );
 $plugin_name = $plugin_data['TextDomain'];
     ?>
@@ -68,6 +81,15 @@ $plugin_name = $plugin_data['TextDomain'];
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options" class="nav-tab <?php echo $active_tab == 'cdn_options' ? 'nav-tab-active' : ''; ?>">CDN Settings</a>
     <a href="?page=<?php echo $plugin_name; ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=support_options" class="nav-tab <?php echo $active_tab == 'support_options' ? 'nav-tab-active' : ''; ?>">Support</a>
 </h2>
+
+<?php if ($active_tab == 'cdn_options'): ?>
+<h2 class="nav-tab-wrapper shift8-subtab-wrapper">
+    <a href="?page=<?php echo esc_attr($plugin_name); ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options&cdn_subtab=general" class="nav-tab <?php echo $cdn_subtab == 'general' ? 'nav-tab-active' : ''; ?>">General</a>
+    <a href="?page=<?php echo esc_attr($plugin_name); ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options&cdn_subtab=minification" class="nav-tab <?php echo $cdn_subtab == 'minification' ? 'nav-tab-active' : ''; ?>">Minification</a>
+    <a href="?page=<?php echo esc_attr($plugin_name); ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options&cdn_subtab=advanced" class="nav-tab <?php echo $cdn_subtab == 'advanced' ? 'nav-tab-active' : ''; ?>">Advanced</a>
+    <a href="?page=<?php echo esc_attr($plugin_name); ?>%2Fcomponents%2Fsettings.php%2Fcustom&tab=cdn_options&cdn_subtab=optimization" class="nav-tab <?php echo $cdn_subtab == 'optimization' ? 'nav-tab-active' : ''; ?>">Resource Optimization</a>
+</h2>
+<?php endif; ?>
 
 <form method="post" action="options.php">
     <?php settings_fields( 'shift8-cdn-settings-group' ); ?>
@@ -231,63 +253,238 @@ $plugin_name = $plugin_data['TextDomain'];
     <!-- CDN SETTINGS TAB -->
     <tbody class="<?php echo $active_tab == 'cdn_options' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">
     <tr valign="top">
-    <th scope="row">CDN Settings</th>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Enable CDN for CSS files : </th>
-    <td><input type="checkbox" id="shift8_cdn_css" name="shift8_cdn_css" <?php echo (empty(esc_attr(get_option('shift8_cdn_css'))) ? '' : 'checked'); ?>></td>
-    </tr>
-    <tr valign="top">
-    <th scope="row" style="padding-left: 30px;">Minify CSS files : </th>
-    <td>
-        <input type="checkbox" id="shift8_cdn_minify_css" name="shift8_cdn_minify_css" <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_css'))) ? '' : 'checked'); ?> <?php echo (empty(esc_attr(get_option('shift8_cdn_css'))) ? 'disabled' : ''); ?>>
-        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
-            <span class="shift8-cdn-tooltiptext">Automatically minify CSS files before serving through CDN. Already minified files (.min.css) are not re-minified. First load may be slower while cache is built.</span>
-        </div>
-    </td>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Enable CDN for JS files : </th>
-    <td><input type="checkbox" id="shift8_cdn_js" name="shift8_cdn_js" <?php echo (empty(esc_attr(get_option('shift8_cdn_js'))) ? '' : 'checked'); ?>></td>
-    </tr>
-    <tr valign="top">
-    <th scope="row" style="padding-left: 30px;">Minify JS files : </th>
-    <td>
-        <input type="checkbox" id="shift8_cdn_minify_js" name="shift8_cdn_minify_js" <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_js'))) ? '' : 'checked'); ?> <?php echo (empty(esc_attr(get_option('shift8_cdn_js'))) ? 'disabled' : ''); ?>>
-        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
-            <span class="shift8-cdn-tooltiptext">Automatically minify JavaScript files before serving through CDN. Already minified files (.min.js) are not re-minified. First load may be slower while cache is built.</span>
-        </div>
-    </td>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Enable CDN for Media files : </th>
-    <td><input type="checkbox" name="shift8_cdn_media" <?php echo (empty(esc_attr(get_option('shift8_cdn_media'))) ? '' : 'checked'); ?>></td>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Minified File Cache : </th>
-    <td>
+    <td colspan="2">
+        
         <?php
-        $cache_stats = shift8_cdn_get_cache_stats();
-        $size_mb = round($cache_stats['total_size'] / (1024 * 1024), 2);
-        echo esc_html($cache_stats['css_count']) . ' CSS files, ' . esc_html($cache_stats['js_count']) . ' JS files cached (' . esc_html($size_mb) . ' MB)';
+        // Hidden inputs to preserve settings from other sub-tabs
+        // Only include hidden input if option is currently checked
+        if ($cdn_subtab !== 'general') {
+            // Preserve General tab settings
+            if (!empty(get_option('shift8_cdn_css'))) {
+                echo '<input type="hidden" name="shift8_cdn_css" value="on">';
+            }
+            if (!empty(get_option('shift8_cdn_js'))) {
+                echo '<input type="hidden" name="shift8_cdn_js" value="on">';
+            }
+            if (!empty(get_option('shift8_cdn_media'))) {
+                echo '<input type="hidden" name="shift8_cdn_media" value="on">';
+            }
+        }
+        if ($cdn_subtab !== 'minification') {
+            // Preserve Minification tab settings
+            if (!empty(get_option('shift8_cdn_minify_css'))) {
+                echo '<input type="hidden" name="shift8_cdn_minify_css" value="on">';
+            }
+            if (!empty(get_option('shift8_cdn_minify_js'))) {
+                echo '<input type="hidden" name="shift8_cdn_minify_js" value="on">';
+            }
+            if (!empty(get_option('shift8_cdn_minify_html'))) {
+                echo '<input type="hidden" name="shift8_cdn_minify_html" value="on">';
+            }
+            if (!empty(get_option('shift8_cdn_minify_html_skip_logged_in'))) {
+                echo '<input type="hidden" name="shift8_cdn_minify_html_skip_logged_in" value="on">';
+            }
+            if (!empty(get_option('shift8_cdn_minify_html_preserve_comments'))) {
+                echo '<input type="hidden" name="shift8_cdn_minify_html_preserve_comments" value="on">';
+            }
+        }
         ?>
-        <br />
-        <a id="shift8-cdn-clear-cache" href="<?php echo esc_url(wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_clear_cache'), 'shift8_cdn_clear_cache')); ?>" class="button button-secondary">Clear Minified Cache</a>
-        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
-            <span class="shift8-cdn-tooltiptext">Remove all cached minified files. They will be regenerated on next page load.</span>
+        
+        <?php if ($cdn_subtab == 'general'): ?>
+        <!-- GENERAL SUB-TAB -->
+        
+        <div class="shift8-card">
+            <h3 class="shift8-card-header">CDN Hostname</h3>
+            <div class="shift8-card-body">
+                <?php if (!empty(esc_attr(get_option('shift8_cdn_prefix')))): ?>
+                <div class="shift8-setting-row">
+                    <div class="shift8-setting-label">
+                        <strong>Your CDN Hostname</strong>
+                        <div class="shift8-info">Copy this to use in other caching plugins that support custom CDN configuration</div>
+                    </div>
+                    <div class="shift8-setting-control">
+                        <input type="text" class="shift8-readonly-input" value="<?php echo esc_attr(shift8_cdn_get_hostname()); ?>" readonly onclick="this.select();" style="width: 300px;">
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="shift8-info">Configure your API key in Core Settings to see your CDN hostname</div>
+                <?php endif; ?>
+            </div>
         </div>
-        <span class="shift8-cdn-cache-response" style="margin-left: 10px;"></span>
+        
+        <div class="shift8-card">
+            <h3 class="shift8-card-header">Enable CDN by File Type</h3>
+            <div class="shift8-card-body">
+                <div class="shift8-setting-row">
+                    <label for="shift8_cdn_css" class="shift8-setting-label">CSS Files</label>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_css" name="shift8_cdn_css" <?php echo (empty(esc_attr(get_option('shift8_cdn_css'))) ? '' : 'checked'); ?> class="shift8-toggle-checkbox">
+                        <label for="shift8_cdn_css" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="shift8-setting-row">
+                    <label for="shift8_cdn_js" class="shift8-setting-label">JavaScript Files</label>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_js" name="shift8_cdn_js" <?php echo (empty(esc_attr(get_option('shift8_cdn_js'))) ? '' : 'checked'); ?> class="shift8-toggle-checkbox">
+                        <label for="shift8_cdn_js" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="shift8-setting-row">
+                    <label for="shift8_cdn_media" class="shift8-setting-label">Image & Media Files</label>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_media" name="shift8_cdn_media" <?php echo (empty(esc_attr(get_option('shift8_cdn_media'))) ? '' : 'checked'); ?> class="shift8-toggle-checkbox">
+                        <label for="shift8_cdn_media" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <?php elseif ($cdn_subtab == 'minification'): ?>
+        <!-- MINIFICATION SUB-TAB -->
+        
+        <div class="shift8-card">
+            <h3 class="shift8-card-header">Automatic Minification</h3>
+            <div class="shift8-card-body">
+                <div class="shift8-setting-row">
+                    <div class="shift8-setting-label">
+                        <label for="shift8_cdn_minify_css">Minify CSS Files</label>
+                        <div class="shift8-info">Requires "Enable CDN for CSS Files" to be active</div>
+                    </div>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_minify_css" name="shift8_cdn_minify_css" <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_css'))) ? '' : 'checked'); ?> <?php echo (empty(esc_attr(get_option('shift8_cdn_css'))) ? 'disabled' : ''); ?> class="shift8-toggle-checkbox">
+                        <label for="shift8_cdn_minify_css" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+                            <span class="shift8-cdn-tooltiptext">Automatically minifies CSS files before serving through CDN. Already minified files (.min.css) are skipped.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shift8-setting-row">
+                    <div class="shift8-setting-label">
+                        <label for="shift8_cdn_minify_js">Minify JavaScript Files</label>
+                        <div class="shift8-info">Requires "Enable CDN for JavaScript Files" to be active</div>
+                    </div>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_minify_js" name="shift8_cdn_minify_js" <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_js'))) ? '' : 'checked'); ?> <?php echo (empty(esc_attr(get_option('shift8_cdn_js'))) ? 'disabled' : ''); ?> class="shift8-toggle-checkbox">
+                        <label for="shift8_cdn_minify_js" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+                            <span class="shift8-cdn-tooltiptext">Automatically minifies JavaScript files before serving through CDN. Already minified files (.min.js) are skipped.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shift8-setting-row">
+                    <div class="shift8-setting-label">
+                        <label for="shift8_cdn_minify_html">Minify HTML Output</label>
+                        <div class="shift8-info">Reduces page size by 20-30%, improving transfer speeds</div>
+                    </div>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_minify_html" name="shift8_cdn_minify_html" <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_html'))) ? '' : 'checked'); ?> class="shift8-toggle-checkbox">
+                        <label for="shift8_cdn_minify_html" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+                            <span class="shift8-cdn-tooltiptext">Removes unnecessary whitespace and comments from HTML output. Automatically skips page builder edit modes.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shift8-setting-row" style="padding-left: 30px;">
+                    <div class="shift8-setting-label">
+                        <label for="shift8_cdn_minify_html_skip_logged_in">Skip for Logged-In Users</label>
+                        <div class="shift8-info">Useful for compatibility with page builders</div>
+                    </div>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_minify_html_skip_logged_in" name="shift8_cdn_minify_html_skip_logged_in" <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_html_skip_logged_in'))) ? '' : 'checked'); ?> <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_html'))) ? 'disabled' : ''); ?> class="shift8-toggle-checkbox shift8-html-option">
+                        <label for="shift8_cdn_minify_html_skip_logged_in" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+                            <span class="shift8-cdn-tooltiptext">When enabled, HTML minification will not run for logged-in users.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shift8-setting-row" style="padding-left: 30px;">
+                    <div class="shift8-setting-label">
+                        <label for="shift8_cdn_minify_html_preserve_comments">Preserve HTML Comments</label>
+                        <div class="shift8-info">Keep all HTML comments (useful for debugging)</div>
+                    </div>
+                    <div class="shift8-setting-control">
+                        <input type="checkbox" id="shift8_cdn_minify_html_preserve_comments" name="shift8_cdn_minify_html_preserve_comments" <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_html_preserve_comments'))) ? '' : 'checked'); ?> <?php echo (empty(esc_attr(get_option('shift8_cdn_minify_html'))) ? 'disabled' : ''); ?> class="shift8-toggle-checkbox shift8-html-option">
+                        <label for="shift8_cdn_minify_html_preserve_comments" class="shift8-toggle-label">
+                            <span class="shift8-toggle-switch"></span>
+                        </label>
+                        <div class="shift8-cdn-tooltip"><span class="dashicons dashicons-editor-help"></span>
+                            <span class="shift8-cdn-tooltiptext">When enabled, HTML comments will not be removed during minification.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="shift8-card">
+            <h3 class="shift8-card-header">Minified File Cache</h3>
+            <div class="shift8-card-body">
+                <div class="shift8-cache-stats">
+                    <?php
+                    $cache_stats = shift8_cdn_get_cache_stats();
+                    $size_mb = round($cache_stats['total_size'] / (1024 * 1024), 2);
+                    echo esc_html($cache_stats['css_count']) . ' CSS files, ' . esc_html($cache_stats['js_count']) . ' JS files cached (' . esc_html($size_mb) . ' MB)';
+                    ?>
+                </div>
+                <div class="shift8-setting-row">
+                    <div class="shift8-setting-label">
+                        <div class="shift8-info">Cache is automatically invalidated when source files change</div>
+                    </div>
+                    <div class="shift8-setting-control">
+                        <a id="shift8-cdn-clear-cache" href="<?php echo esc_url(wp_nonce_url( admin_url('admin-ajax.php?action=shift8_cdn_clear_cache'), 'shift8_cdn_clear_cache')); ?>" class="button button-secondary">Clear Minified Cache</a>
+                        <span class="shift8-cdn-cache-response" style="margin-left: 10px;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <?php elseif ($cdn_subtab == 'advanced'): ?>
+        <!-- ADVANCED SUB-TAB -->
+        
+        <div class="shift8-card">
+            <h3 class="shift8-card-header">URL Exclusion Patterns</h3>
+            <div class="shift8-card-body">
+                <div class="shift8-setting-label">
+                    <strong>Files to exclude from CDN (one per line)</strong>
+                    <div class="shift8-info">Example: /wp-content/themes/mytheme/custom.js or /wp-content/plugins/myplugin/</div>
+                    <div class="shift8-info" style="color: #d63638; margin-top: 8px;">Note: Wildcards (*) are supported. Example: /wp-content/uploads/2023/12/*</div>
+                </div>
+                <textarea id="shift8-cdn-reject-files" rows="10" style="width: 100%; margin-top: 12px;" name="shift8_cdn_reject_files" placeholder="/wp-content/uploads/file.jpg&#10;/wp-content/plugins/myplugin/"><?php echo esc_textarea(get_option('shift8_cdn_reject_files')); ?></textarea>
+            </div>
+        </div>
+        
+        <?php elseif ($cdn_subtab == 'optimization'): ?>
+        <!-- RESOURCE OPTIMIZATION SUB-TAB (Coming Soon) -->
+        
+        <div class="shift8-coming-soon">
+            <h3>Coming Soon in Version 2.1.0</h3>
+            <ul>
+                <li>HTML Minification</li>
+                <li>Resource Hints (preconnect, preload)</li>
+                <li>Enhanced Lazy Loading</li>
+                <li>JavaScript Deferring</li>
+                <li>Font Optimization</li>
+            </ul>
+            <p style="color: #646970; margin-top: 20px;">These features are currently in development and will be available in a future release.</p>
+        </div>
+        
+        <?php endif; ?>
+        
     </td>
     </tr>
-    <tr valign="top">
-    <th scope="row">Exclude files from CDN</th>
-    </tr>
-    <tr valign="top">
-    <th scope="row">Specify URL(s) of files that should not get served via CDN (one per line) : <br /><span class="shift8-cdn-help">Note : You can use an asterisk as a wildcard for example: /wp-content/uploads/2023/12/long-filename-2023-12-20-14-04-13*</span></th>
-    </tr>
-    <td>
-    <textarea id="shift8-cdn-reject-files" rows="10" cols="100" name="shift8_cdn_reject_files" placeholder="wp-content/uploads/file.jpg\nsome/path/file(.*)"><?php echo esc_textarea(get_option('shift8_cdn_reject_files')); ?></textarea>
-    </td>
     </tbody>
     <!-- SUPPORT TAB -->
     <tbody class="<?php echo $active_tab == 'support_options' ? 'shift8-cdn-admin-tab-active' : 'shift8-cdn-admin-tab-inactive'; ?>">

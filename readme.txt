@@ -4,11 +4,15 @@
 * Tags: cdn, free cdn, speed, performance, content delivery network
 * Requires at least: 3.0.1
 * Tested up to: 6.9
-* Stable tag: 1.72.1
+* Stable tag: 2.0.1
 * License: GPLv3
 * License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 This is a plugin that integrates a 100% free CDN service operated by Shift8, for your Wordpress site. What this means is that you can simply install this plugin, activate and register with our CDN service and all of your static assets on your website will be served through our global content delivery network.
+
+== Migration Notice ==
+
+Shift8 CDN as a service is migrating into [Atomic Edge](https://wordpress.org/plugins/atomic-edge-security/). Your user account has been migrated to the new dashboard, [click here](https://dashboard.atomicedge.io/password-reset/request) to reset your password.
 
 == Community Support ==
 
@@ -114,6 +118,25 @@ This is a known issue with how lazy loading is implemented in some scenarios. Cu
 3. Before / After CDN performance improvement, taken from Pingdom
 
 == Changelog ==
+
+= 2.0.1 =
+* Notice: Added admin migration notice with links to Atomic Edge plugin and password reset
+* Change: Unified CDN hostname suffixes to use .wpcdn.shift8cdn.com
+
+= 2.0.0 =
+* MAJOR: Complete admin UI redesign with modern card-based layout
+* Enhancement: New sub-tab navigation system (General, Minification, Advanced, Resource Optimization)
+* Enhancement: Replaced checkboxes with modern CSS-only toggle switches
+* Enhancement: Implemented minimal link-style sub-tab navigation (WooCommerce-inspired)
+* Enhancement: Added save confirmation notifications with dismissible success messages
+* Enhancement: Fixed settings persistence across sub-tabs with hidden input preservation
+* Enhancement: Improved spacing and visual hierarchy throughout admin interface
+* Enhancement: Added "Coming Soon" placeholder for future Resource Optimization features
+* Enhancement: Read-only CDN hostname field with better spacing and click-to-copy
+* Technical: All 123 unit tests passing with updated test infrastructure
+* Technical: Added PHPUNIT_RUNNING constant to prevent die() in test environment
+* Technical: 100% backward compatible - no database schema or option key changes
+* CSS: Updated to v4.2 with new card components and responsive design patterns
 
 = 1.72.1 =
 * Enhancement: Added PHP version check (requires PHP 7.4+) with helpful admin notice

@@ -5,6 +5,9 @@
  * @package Shift8\CDN\Tests
  */
 
+// Define constant to indicate tests are running
+define('PHPUNIT_RUNNING', true);
+
 // Composer autoloader
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -190,10 +193,12 @@ Functions\stubs([
     ),
     'wp_mkdir_p' => true,
     'wp_send_json_success' => function($data) {
-        echo json_encode(['success' => true, 'data' => $data]);
+        // Don't echo during global bootstrap, only in test-specific mocks
+        return;
     },
     'wp_send_json_error' => function($data) {
-        echo json_encode(['success' => false, 'data' => $data]);
+        // Don't echo during global bootstrap, only in test-specific mocks
+        return;
     },
 ]);
 
